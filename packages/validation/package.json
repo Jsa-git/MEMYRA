@@ -1,0 +1,11 @@
+{
+  "name": "@memyra/validation",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@memyra/domain": "workspace:*",
+    "zod": "^4.1.5"
+  }
+}

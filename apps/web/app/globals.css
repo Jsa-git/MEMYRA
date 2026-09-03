@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+@source '../../../packages/ui/src';
+
+@theme {
+  --color-graphite: #242622;
+  --color-ivory: #f8f4ea;
+  --color-sand: #e8dfcf;
+  --color-mineral: #d1c7b5;
+  --color-forest: #23483b;
+  --color-forest-light: #356454;
+  --color-surface: #fffdf7;
+  --color-clay: #a16f5b;
+  --font-sans: var(--font-memyra-sans);
+  --font-serif: var(--font-memyra-serif);
+  --shadow-soft: 0 12px 40px rgb(36 38 34 / 8%);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    background: var(--color-ivory);
+    color: var(--color-graphite);
+  }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--color-ivory);
+    font-family: var(--font-sans), sans-serif;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::selection {
+    background: var(--color-sand);
+  }
+}
+
+@utility page-shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 48rem;
+  padding: 1.5rem 1.25rem 7rem;
+}
+
+@utility title-display {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(2rem, 9vw, 3.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}

@@ -1,0 +1,49 @@
+{
+  "name": "memyra",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @memyra/web dev",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --check AGENTS.md README.md CONTRIBUTING.md SECURITY.md package.json pnpm-workspace.yaml eslint.config.mjs playwright.config.ts apps packages docs skills agents superpowers toolkit tests .github",
+    "format:write": "prettier --write AGENTS.md README.md CONTRIBUTING.md SECURITY.md package.json pnpm-workspace.yaml eslint.config.mjs playwright.config.ts apps packages docs skills agents superpowers toolkit tests .github",
+    "typecheck": "tsc -b --pretty false && tsc -p tests/tsconfig.json --noEmit --pretty false",
+    "test": "vitest run --exclude tests/e2e/** --exclude work/**",
+    "test:e2e": "playwright test",
+    "build": "pnpm --filter @memyra/web build",
+    "db:generate": "pnpm --filter @memyra/database db:generate",
+    "db:validate": "pnpm --filter @memyra/database exec prisma validate",
+    "db:migrate": "pnpm --filter @memyra/database db:migrate",
+    "db:deploy": "pnpm --filter @memyra/database exec prisma migrate deploy",
+    "db:seed": "pnpm --filter @memyra/database db:seed",
+    "check:architecture": "node toolkit/check-architecture.mjs",
+    "check:security": "node toolkit/check-security.mjs",
+    "check:env": "node toolkit/check-env.mjs",
+    "check:types": "pnpm typecheck",
+    "check:tests": "pnpm test",
+    "check:build": "pnpm build",
+    "check:dependencies": "pnpm audit --audit-level high",
+    "check:dead-code": "node toolkit/check-dead-code.mjs",
+    "check:accessibility": "eslint apps/web packages/ui --max-warnings=0",
+    "verify": "pnpm check:env && pnpm check:architecture && pnpm check:security && pnpm db:validate && pnpm lint && pnpm check:accessibility && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@memyra/application": "workspace:*",
+    "@memyra/domain": "workspace:*",
+    "@memyra/validation": "workspace:*",
+    "@next/eslint-plugin-next": "16.3.4",
+    "@playwright/test": "1.55.1",
+    "@eslint/js": "9.35.0",
+    "@types/node": "24.3.0",
+    "eslint": "9.35.0",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2",
+    "typescript-eslint": "8.41.0",
+    "vitest": "3.2.6"
+  }
+}

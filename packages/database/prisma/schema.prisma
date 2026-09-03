@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum JourneyStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+model User {
+  id            String          @id @db.Uuid
+  name          String          @db.VarChar(120)
+  email         String          @unique @db.VarChar(320)
+  emailVerified Boolean         @default(false) @map("email_verified")
+  image         String?
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sessions      Session[]
+  accounts      Account[]
+  journeys      Journey[]
+  consents      ConsentRecord[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @db.Uuid
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  token     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  ipAddress String?  @map("ip_address") @db.VarChar(64)
+  userAgent String?  @map("user_agent") @db.VarChar(512)
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @db.Uuid
+  accountId             String    @map("account_id") @db.VarChar(255)
+  providerId            String    @map("provider_id") @db.VarChar(64)
+  userId                String    @map("user_id") @db.Uuid
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @db.Uuid
+  identifier String   @db.VarChar(320)
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+enum ConsentType {
+  TERMS
+  PRIVACY
+  PHOTO_PROCESSING
+}
+
+model ConsentRecord {
+  id         String      @id @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
+  type       ConsentType
+  version    String      @db.VarChar(64)
+  accepted   Boolean
+  acceptedAt DateTime?   @map("accepted_at") @db.Timestamptz(3)
+  revokedAt  DateTime?   @map("revoked_at") @db.Timestamptz(3)
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, createdAt])
+  @@map("consent_records")
+}
+
+model Journey {
+  id             String        @id @db.Uuid
+  userId         String        @map("user_id") @db.Uuid
+  name           String        @db.VarChar(100)
+  status         JourneyStatus @default(ACTIVE)
+  context        String        @db.VarChar(64)
+  approximateAge String        @map("approximate_age") @db.VarChar(64)
+  goal           String        @db.VarChar(160)
+  startedAt      DateTime      @map("started_at") @db.Timestamptz(3)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skinArea       SkinArea?
+
+  @@index([userId, createdAt])
+  @@map("journeys")
+}
+
+model SkinArea {
+  id         String   @id @db.Uuid
+  journeyId  String   @unique @map("journey_id") @db.Uuid
+  bodyRegion String   @map("body_region") @db.VarChar(64)
+  side       String   @db.VarChar(32)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  journey    Journey  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+
+  @@map("skin_areas")
+}

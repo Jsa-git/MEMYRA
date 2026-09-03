@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true,
+    "composite": false,
+    "types": ["vitest/globals"]
+  },
+  "include": ["**/*.ts", "../playwright.config.ts"]
+}
