@@ -76,3 +76,8 @@ export type Journey = Prisma.JourneyModel
  * 
  */
 export type SkinArea = Prisma.SkinAreaModel
+/**
+ * Model PhotoRecord
+ * 
+ */
+export type PhotoRecord = Prisma.PhotoRecordModel

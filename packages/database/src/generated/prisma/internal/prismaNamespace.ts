@@ -403,7 +403,8 @@ export const ModelName = {
   Verification: 'Verification',
   ConsentRecord: 'ConsentRecord',
   Journey: 'Journey',
-  SkinArea: 'SkinArea'
+  SkinArea: 'SkinArea',
+  PhotoRecord: 'PhotoRecord'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "consentRecord" | "journey" | "skinArea"
+    modelProps: "user" | "session" | "account" | "verification" | "consentRecord" | "journey" | "skinArea" | "photoRecord"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -941,6 +942,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PhotoRecord: {
+      payload: Prisma.$PhotoRecordPayload<ExtArgs>
+      fields: Prisma.PhotoRecordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PhotoRecordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PhotoRecordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>
+        }
+        findFirst: {
+          args: Prisma.PhotoRecordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PhotoRecordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>
+        }
+        findMany: {
+          args: Prisma.PhotoRecordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>[]
+        }
+        create: {
+          args: Prisma.PhotoRecordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>
+        }
+        createMany: {
+          args: Prisma.PhotoRecordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PhotoRecordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>[]
+        }
+        delete: {
+          args: Prisma.PhotoRecordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>
+        }
+        update: {
+          args: Prisma.PhotoRecordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>
+        }
+        deleteMany: {
+          args: Prisma.PhotoRecordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PhotoRecordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PhotoRecordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>[]
+        }
+        upsert: {
+          args: Prisma.PhotoRecordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PhotoRecordPayload>
+        }
+        aggregate: {
+          args: Prisma.PhotoRecordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePhotoRecord>
+        }
+        groupBy: {
+          args: Prisma.PhotoRecordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PhotoRecordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PhotoRecordCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PhotoRecordCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1081,6 +1156,26 @@ export const SkinAreaScalarFieldEnum = {
 export type SkinAreaScalarFieldEnum = (typeof SkinAreaScalarFieldEnum)[keyof typeof SkinAreaScalarFieldEnum]
 
 
+export const PhotoRecordScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  skinAreaId: 'skinAreaId',
+  capturedAt: 'capturedAt',
+  storageKey: 'storageKey',
+  width: 'width',
+  height: 'height',
+  orientation: 'orientation',
+  framing: 'framing',
+  distance: 'distance',
+  lighting: 'lighting',
+  qualityStatus: 'qualityStatus',
+  processingStatus: 'processingStatus',
+  createdAt: 'createdAt'
+} as const
+
+export type PhotoRecordScalarFieldEnum = (typeof PhotoRecordScalarFieldEnum)[keyof typeof PhotoRecordScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1185,6 +1280,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1345,6 +1454,7 @@ export type GlobalOmitConfig = {
   consentRecord?: Prisma.ConsentRecordOmit
   journey?: Prisma.JourneyOmit
   skinArea?: Prisma.SkinAreaOmit
+  photoRecord?: Prisma.PhotoRecordOmit
 }
 
 /* Types for Logging */

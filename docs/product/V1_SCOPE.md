@@ -1,6 +1,6 @@
 # Escopo previsto do V1
 
-Status: **em implementação por vertical slices**. Identity, ownership, Create Journey, listagem e retomada estão implementados. Captura e demais capacidades continuam planejadas e não autorizadas nesta fase.
+Status: **em implementação por vertical slices**. Identity, ownership e gerenciamento de jornadas estão implementados. A primeira captura guiada e privada está implementada atrás da configuração operacional do bucket; comparação, rotina e progresso continuam planejados.
 
 Inclui, sujeito a detalhamento e critérios de aceite: autenticação; onboarding; criação de jornada; registro de região; captura guiada; home; rotina; check-in; histórico; comparação visual; progresso; configurações; consentimento e privacidade.
 
@@ -10,4 +10,4 @@ Mesma região ao longo do tempo; fotografia privada; acessibilidade e responsivi
 
 ## Fora do slice atual
 
-Fotografias, upload, storage, câmera, IA, rotina, check-in, comparação e notificações. O modelo técnico de consentimento existe, mas nenhum aceite é solicitado sem texto e versão reais.
+IA, rotina, check-in, comparação visual automatizada e notificações. Não há análise de imagem, diagnóstico, score clínico nem envio silencioso a terceiros.

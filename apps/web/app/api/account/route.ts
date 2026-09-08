@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 
 import { requireCurrentActor } from '../../../src/server/current-actor';
 import { getDatabase } from '../../../src/server/database';
+import { deletePrivatePhoto } from '../../../src/server/photo-storage';
 
 export async function DELETE(request: Request) {
   try {
@@ -11,6 +12,11 @@ export async function DELETE(request: Request) {
     const input = deleteAccountInputSchema.safeParse(await request.json());
     if (!input.success)
       return NextResponse.json({ code: 'CONFIRMATION_REQUIRED' }, { status: 400 });
+    const photos = await getDatabase().photoRecord.findMany({
+      where: { journey: { userId: actor.userId } },
+      select: { storageKey: true },
+    });
+    await Promise.all(photos.map(({ storageKey }) => deletePrivatePhoto(storageKey)));
     const result = await getDatabase().user.deleteMany({ where: { id: actor.userId } });
     if (result.count !== 1) return NextResponse.json({ code: 'NOT_FOUND' }, { status: 404 });
     return new NextResponse(null, { status: 204 });

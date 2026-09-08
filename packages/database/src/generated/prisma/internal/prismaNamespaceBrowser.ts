@@ -57,7 +57,8 @@ export const ModelName = {
   Verification: 'Verification',
   ConsentRecord: 'ConsentRecord',
   Journey: 'Journey',
-  SkinArea: 'SkinArea'
+  SkinArea: 'SkinArea',
+  PhotoRecord: 'PhotoRecord'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -175,6 +176,26 @@ export const SkinAreaScalarFieldEnum = {
 } as const
 
 export type SkinAreaScalarFieldEnum = (typeof SkinAreaScalarFieldEnum)[keyof typeof SkinAreaScalarFieldEnum]
+
+
+export const PhotoRecordScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  skinAreaId: 'skinAreaId',
+  capturedAt: 'capturedAt',
+  storageKey: 'storageKey',
+  width: 'width',
+  height: 'height',
+  orientation: 'orientation',
+  framing: 'framing',
+  distance: 'distance',
+  lighting: 'lighting',
+  qualityStatus: 'qualityStatus',
+  processingStatus: 'processingStatus',
+  createdAt: 'createdAt'
+} as const
+
+export type PhotoRecordScalarFieldEnum = (typeof PhotoRecordScalarFieldEnum)[keyof typeof PhotoRecordScalarFieldEnum]
 
 
 export const SortOrder = {

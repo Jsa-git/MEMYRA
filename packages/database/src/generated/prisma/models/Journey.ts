@@ -224,6 +224,7 @@ export type JourneyWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Journey"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   skinArea?: Prisma.XOR<Prisma.SkinAreaNullableScalarRelationFilter, Prisma.SkinAreaWhereInput> | null
+  photos?: Prisma.PhotoRecordListRelationFilter
 }
 
 export type JourneyOrderByWithRelationInput = {
@@ -239,6 +240,7 @@ export type JourneyOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   skinArea?: Prisma.SkinAreaOrderByWithRelationInput
+  photos?: Prisma.PhotoRecordOrderByRelationAggregateInput
 }
 
 export type JourneyWhereUniqueInput = Prisma.AtLeast<{
@@ -257,6 +259,7 @@ export type JourneyWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Journey"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   skinArea?: Prisma.XOR<Prisma.SkinAreaNullableScalarRelationFilter, Prisma.SkinAreaWhereInput> | null
+  photos?: Prisma.PhotoRecordListRelationFilter
 }, "id">
 
 export type JourneyOrderByWithAggregationInput = {
@@ -303,6 +306,7 @@ export type JourneyCreateInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutJourneysInput
   skinArea?: Prisma.SkinAreaCreateNestedOneWithoutJourneyInput
+  photos?: Prisma.PhotoRecordCreateNestedManyWithoutJourneyInput
 }
 
 export type JourneyUncheckedCreateInput = {
@@ -317,6 +321,7 @@ export type JourneyUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   skinArea?: Prisma.SkinAreaUncheckedCreateNestedOneWithoutJourneyInput
+  photos?: Prisma.PhotoRecordUncheckedCreateNestedManyWithoutJourneyInput
 }
 
 export type JourneyUpdateInput = {
@@ -331,6 +336,7 @@ export type JourneyUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutJourneysNestedInput
   skinArea?: Prisma.SkinAreaUpdateOneWithoutJourneyNestedInput
+  photos?: Prisma.PhotoRecordUpdateManyWithoutJourneyNestedInput
 }
 
 export type JourneyUncheckedUpdateInput = {
@@ -345,6 +351,7 @@ export type JourneyUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skinArea?: Prisma.SkinAreaUncheckedUpdateOneWithoutJourneyNestedInput
+  photos?: Prisma.PhotoRecordUncheckedUpdateManyWithoutJourneyNestedInput
 }
 
 export type JourneyCreateManyInput = {
@@ -499,6 +506,20 @@ export type JourneyUpdateOneRequiredWithoutSkinAreaNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JourneyUpdateToOneWithWhereWithoutSkinAreaInput, Prisma.JourneyUpdateWithoutSkinAreaInput>, Prisma.JourneyUncheckedUpdateWithoutSkinAreaInput>
 }
 
+export type JourneyCreateNestedOneWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.JourneyCreateWithoutPhotosInput, Prisma.JourneyUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.JourneyCreateOrConnectWithoutPhotosInput
+  connect?: Prisma.JourneyWhereUniqueInput
+}
+
+export type JourneyUpdateOneRequiredWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.JourneyCreateWithoutPhotosInput, Prisma.JourneyUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.JourneyCreateOrConnectWithoutPhotosInput
+  upsert?: Prisma.JourneyUpsertWithoutPhotosInput
+  connect?: Prisma.JourneyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JourneyUpdateToOneWithWhereWithoutPhotosInput, Prisma.JourneyUpdateWithoutPhotosInput>, Prisma.JourneyUncheckedUpdateWithoutPhotosInput>
+}
+
 export type JourneyCreateWithoutUserInput = {
   id: string
   name: string
@@ -510,6 +531,7 @@ export type JourneyCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   skinArea?: Prisma.SkinAreaCreateNestedOneWithoutJourneyInput
+  photos?: Prisma.PhotoRecordCreateNestedManyWithoutJourneyInput
 }
 
 export type JourneyUncheckedCreateWithoutUserInput = {
@@ -523,6 +545,7 @@ export type JourneyUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   skinArea?: Prisma.SkinAreaUncheckedCreateNestedOneWithoutJourneyInput
+  photos?: Prisma.PhotoRecordUncheckedCreateNestedManyWithoutJourneyInput
 }
 
 export type JourneyCreateOrConnectWithoutUserInput = {
@@ -578,6 +601,7 @@ export type JourneyCreateWithoutSkinAreaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutJourneysInput
+  photos?: Prisma.PhotoRecordCreateNestedManyWithoutJourneyInput
 }
 
 export type JourneyUncheckedCreateWithoutSkinAreaInput = {
@@ -591,6 +615,7 @@ export type JourneyUncheckedCreateWithoutSkinAreaInput = {
   startedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  photos?: Prisma.PhotoRecordUncheckedCreateNestedManyWithoutJourneyInput
 }
 
 export type JourneyCreateOrConnectWithoutSkinAreaInput = {
@@ -620,6 +645,7 @@ export type JourneyUpdateWithoutSkinAreaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutJourneysNestedInput
+  photos?: Prisma.PhotoRecordUpdateManyWithoutJourneyNestedInput
 }
 
 export type JourneyUncheckedUpdateWithoutSkinAreaInput = {
@@ -633,6 +659,79 @@ export type JourneyUncheckedUpdateWithoutSkinAreaInput = {
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  photos?: Prisma.PhotoRecordUncheckedUpdateManyWithoutJourneyNestedInput
+}
+
+export type JourneyCreateWithoutPhotosInput = {
+  id: string
+  name: string
+  status?: $Enums.JourneyStatus
+  context: string
+  approximateAge: string
+  goal: string
+  startedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutJourneysInput
+  skinArea?: Prisma.SkinAreaCreateNestedOneWithoutJourneyInput
+}
+
+export type JourneyUncheckedCreateWithoutPhotosInput = {
+  id: string
+  userId: string
+  name: string
+  status?: $Enums.JourneyStatus
+  context: string
+  approximateAge: string
+  goal: string
+  startedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  skinArea?: Prisma.SkinAreaUncheckedCreateNestedOneWithoutJourneyInput
+}
+
+export type JourneyCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.JourneyWhereUniqueInput
+  create: Prisma.XOR<Prisma.JourneyCreateWithoutPhotosInput, Prisma.JourneyUncheckedCreateWithoutPhotosInput>
+}
+
+export type JourneyUpsertWithoutPhotosInput = {
+  update: Prisma.XOR<Prisma.JourneyUpdateWithoutPhotosInput, Prisma.JourneyUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.JourneyCreateWithoutPhotosInput, Prisma.JourneyUncheckedCreateWithoutPhotosInput>
+  where?: Prisma.JourneyWhereInput
+}
+
+export type JourneyUpdateToOneWithWhereWithoutPhotosInput = {
+  where?: Prisma.JourneyWhereInput
+  data: Prisma.XOR<Prisma.JourneyUpdateWithoutPhotosInput, Prisma.JourneyUncheckedUpdateWithoutPhotosInput>
+}
+
+export type JourneyUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJourneyStatusFieldUpdateOperationsInput | $Enums.JourneyStatus
+  context?: Prisma.StringFieldUpdateOperationsInput | string
+  approximateAge?: Prisma.StringFieldUpdateOperationsInput | string
+  goal?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutJourneysNestedInput
+  skinArea?: Prisma.SkinAreaUpdateOneWithoutJourneyNestedInput
+}
+
+export type JourneyUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumJourneyStatusFieldUpdateOperationsInput | $Enums.JourneyStatus
+  context?: Prisma.StringFieldUpdateOperationsInput | string
+  approximateAge?: Prisma.StringFieldUpdateOperationsInput | string
+  goal?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  skinArea?: Prisma.SkinAreaUncheckedUpdateOneWithoutJourneyNestedInput
 }
 
 export type JourneyCreateManyUserInput = {
@@ -658,6 +757,7 @@ export type JourneyUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skinArea?: Prisma.SkinAreaUpdateOneWithoutJourneyNestedInput
+  photos?: Prisma.PhotoRecordUpdateManyWithoutJourneyNestedInput
 }
 
 export type JourneyUncheckedUpdateWithoutUserInput = {
@@ -671,6 +771,7 @@ export type JourneyUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   skinArea?: Prisma.SkinAreaUncheckedUpdateOneWithoutJourneyNestedInput
+  photos?: Prisma.PhotoRecordUncheckedUpdateManyWithoutJourneyNestedInput
 }
 
 export type JourneyUncheckedUpdateManyWithoutUserInput = {
@@ -686,6 +787,35 @@ export type JourneyUncheckedUpdateManyWithoutUserInput = {
 }
 
 
+/**
+ * Count Type JourneyCountOutputType
+ */
+
+export type JourneyCountOutputType = {
+  photos: number
+}
+
+export type JourneyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  photos?: boolean | JourneyCountOutputTypeCountPhotosArgs
+}
+
+/**
+ * JourneyCountOutputType without action
+ */
+export type JourneyCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JourneyCountOutputType
+   */
+  select?: Prisma.JourneyCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * JourneyCountOutputType without action
+ */
+export type JourneyCountOutputTypeCountPhotosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PhotoRecordWhereInput
+}
+
 
 export type JourneySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -700,6 +830,8 @@ export type JourneySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   skinArea?: boolean | Prisma.Journey$skinAreaArgs<ExtArgs>
+  photos?: boolean | Prisma.Journey$photosArgs<ExtArgs>
+  _count?: boolean | Prisma.JourneyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["journey"]>
 
 export type JourneySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -747,6 +879,8 @@ export type JourneyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type JourneyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   skinArea?: boolean | Prisma.Journey$skinAreaArgs<ExtArgs>
+  photos?: boolean | Prisma.Journey$photosArgs<ExtArgs>
+  _count?: boolean | Prisma.JourneyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JourneyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -760,6 +894,7 @@ export type $JourneyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     skinArea: Prisma.$SkinAreaPayload<ExtArgs> | null
+    photos: Prisma.$PhotoRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1168,6 +1303,7 @@ export interface Prisma__JourneyClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   skinArea<T extends Prisma.Journey$skinAreaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Journey$skinAreaArgs<ExtArgs>>): Prisma.Prisma__SkinAreaClient<runtime.Types.Result.GetResult<Prisma.$SkinAreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  photos<T extends Prisma.Journey$photosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Journey$photosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1624,6 +1760,30 @@ export type Journey$skinAreaArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.SkinAreaInclude<ExtArgs> | null
   where?: Prisma.SkinAreaWhereInput
+}
+
+/**
+ * Journey.photos
+ */
+export type Journey$photosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PhotoRecord
+   */
+  select?: Prisma.PhotoRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PhotoRecord
+   */
+  omit?: Prisma.PhotoRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PhotoRecordInclude<ExtArgs> | null
+  where?: Prisma.PhotoRecordWhereInput
+  orderBy?: Prisma.PhotoRecordOrderByWithRelationInput | Prisma.PhotoRecordOrderByWithRelationInput[]
+  cursor?: Prisma.PhotoRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PhotoRecordScalarFieldEnum | Prisma.PhotoRecordScalarFieldEnum[]
 }
 
 /**

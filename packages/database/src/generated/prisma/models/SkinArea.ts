@@ -191,6 +191,7 @@ export type SkinAreaWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"SkinArea"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SkinArea"> | Date | string
   journey?: Prisma.XOR<Prisma.JourneyScalarRelationFilter, Prisma.JourneyWhereInput>
+  photos?: Prisma.PhotoRecordListRelationFilter
 }
 
 export type SkinAreaOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type SkinAreaOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   journey?: Prisma.JourneyOrderByWithRelationInput
+  photos?: Prisma.PhotoRecordOrderByRelationAggregateInput
 }
 
 export type SkinAreaWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +216,7 @@ export type SkinAreaWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"SkinArea"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SkinArea"> | Date | string
   journey?: Prisma.XOR<Prisma.JourneyScalarRelationFilter, Prisma.JourneyWhereInput>
+  photos?: Prisma.PhotoRecordListRelationFilter
 }, "id" | "journeyId">
 
 export type SkinAreaOrderByWithAggregationInput = {
@@ -247,6 +250,7 @@ export type SkinAreaCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   journey: Prisma.JourneyCreateNestedOneWithoutSkinAreaInput
+  photos?: Prisma.PhotoRecordCreateNestedManyWithoutSkinAreaInput
 }
 
 export type SkinAreaUncheckedCreateInput = {
@@ -256,6 +260,7 @@ export type SkinAreaUncheckedCreateInput = {
   side: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  photos?: Prisma.PhotoRecordUncheckedCreateNestedManyWithoutSkinAreaInput
 }
 
 export type SkinAreaUpdateInput = {
@@ -265,6 +270,7 @@ export type SkinAreaUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   journey?: Prisma.JourneyUpdateOneRequiredWithoutSkinAreaNestedInput
+  photos?: Prisma.PhotoRecordUpdateManyWithoutSkinAreaNestedInput
 }
 
 export type SkinAreaUncheckedUpdateInput = {
@@ -274,6 +280,7 @@ export type SkinAreaUncheckedUpdateInput = {
   side?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  photos?: Prisma.PhotoRecordUncheckedUpdateManyWithoutSkinAreaNestedInput
 }
 
 export type SkinAreaCreateManyInput = {
@@ -334,6 +341,11 @@ export type SkinAreaMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type SkinAreaScalarRelationFilter = {
+  is?: Prisma.SkinAreaWhereInput
+  isNot?: Prisma.SkinAreaWhereInput
+}
+
 export type SkinAreaCreateNestedOneWithoutJourneyInput = {
   create?: Prisma.XOR<Prisma.SkinAreaCreateWithoutJourneyInput, Prisma.SkinAreaUncheckedCreateWithoutJourneyInput>
   connectOrCreate?: Prisma.SkinAreaCreateOrConnectWithoutJourneyInput
@@ -366,12 +378,27 @@ export type SkinAreaUncheckedUpdateOneWithoutJourneyNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SkinAreaUpdateToOneWithWhereWithoutJourneyInput, Prisma.SkinAreaUpdateWithoutJourneyInput>, Prisma.SkinAreaUncheckedUpdateWithoutJourneyInput>
 }
 
+export type SkinAreaCreateNestedOneWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.SkinAreaCreateWithoutPhotosInput, Prisma.SkinAreaUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.SkinAreaCreateOrConnectWithoutPhotosInput
+  connect?: Prisma.SkinAreaWhereUniqueInput
+}
+
+export type SkinAreaUpdateOneRequiredWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.SkinAreaCreateWithoutPhotosInput, Prisma.SkinAreaUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.SkinAreaCreateOrConnectWithoutPhotosInput
+  upsert?: Prisma.SkinAreaUpsertWithoutPhotosInput
+  connect?: Prisma.SkinAreaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SkinAreaUpdateToOneWithWhereWithoutPhotosInput, Prisma.SkinAreaUpdateWithoutPhotosInput>, Prisma.SkinAreaUncheckedUpdateWithoutPhotosInput>
+}
+
 export type SkinAreaCreateWithoutJourneyInput = {
   id: string
   bodyRegion: string
   side: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  photos?: Prisma.PhotoRecordCreateNestedManyWithoutSkinAreaInput
 }
 
 export type SkinAreaUncheckedCreateWithoutJourneyInput = {
@@ -380,6 +407,7 @@ export type SkinAreaUncheckedCreateWithoutJourneyInput = {
   side: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  photos?: Prisma.PhotoRecordUncheckedCreateNestedManyWithoutSkinAreaInput
 }
 
 export type SkinAreaCreateOrConnectWithoutJourneyInput = {
@@ -404,6 +432,7 @@ export type SkinAreaUpdateWithoutJourneyInput = {
   side?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  photos?: Prisma.PhotoRecordUpdateManyWithoutSkinAreaNestedInput
 }
 
 export type SkinAreaUncheckedUpdateWithoutJourneyInput = {
@@ -412,8 +441,90 @@ export type SkinAreaUncheckedUpdateWithoutJourneyInput = {
   side?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  photos?: Prisma.PhotoRecordUncheckedUpdateManyWithoutSkinAreaNestedInput
 }
 
+export type SkinAreaCreateWithoutPhotosInput = {
+  id: string
+  bodyRegion: string
+  side: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  journey: Prisma.JourneyCreateNestedOneWithoutSkinAreaInput
+}
+
+export type SkinAreaUncheckedCreateWithoutPhotosInput = {
+  id: string
+  journeyId: string
+  bodyRegion: string
+  side: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SkinAreaCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.SkinAreaWhereUniqueInput
+  create: Prisma.XOR<Prisma.SkinAreaCreateWithoutPhotosInput, Prisma.SkinAreaUncheckedCreateWithoutPhotosInput>
+}
+
+export type SkinAreaUpsertWithoutPhotosInput = {
+  update: Prisma.XOR<Prisma.SkinAreaUpdateWithoutPhotosInput, Prisma.SkinAreaUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.SkinAreaCreateWithoutPhotosInput, Prisma.SkinAreaUncheckedCreateWithoutPhotosInput>
+  where?: Prisma.SkinAreaWhereInput
+}
+
+export type SkinAreaUpdateToOneWithWhereWithoutPhotosInput = {
+  where?: Prisma.SkinAreaWhereInput
+  data: Prisma.XOR<Prisma.SkinAreaUpdateWithoutPhotosInput, Prisma.SkinAreaUncheckedUpdateWithoutPhotosInput>
+}
+
+export type SkinAreaUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  bodyRegion?: Prisma.StringFieldUpdateOperationsInput | string
+  side?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  journey?: Prisma.JourneyUpdateOneRequiredWithoutSkinAreaNestedInput
+}
+
+export type SkinAreaUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  journeyId?: Prisma.StringFieldUpdateOperationsInput | string
+  bodyRegion?: Prisma.StringFieldUpdateOperationsInput | string
+  side?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type SkinAreaCountOutputType
+ */
+
+export type SkinAreaCountOutputType = {
+  photos: number
+}
+
+export type SkinAreaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  photos?: boolean | SkinAreaCountOutputTypeCountPhotosArgs
+}
+
+/**
+ * SkinAreaCountOutputType without action
+ */
+export type SkinAreaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SkinAreaCountOutputType
+   */
+  select?: Prisma.SkinAreaCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * SkinAreaCountOutputType without action
+ */
+export type SkinAreaCountOutputTypeCountPhotosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PhotoRecordWhereInput
+}
 
 
 export type SkinAreaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -424,6 +535,8 @@ export type SkinAreaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   updatedAt?: boolean
   journey?: boolean | Prisma.JourneyDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.SkinArea$photosArgs<ExtArgs>
+  _count?: boolean | Prisma.SkinAreaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["skinArea"]>
 
 export type SkinAreaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -458,6 +571,8 @@ export type SkinAreaSelectScalar = {
 export type SkinAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "journeyId" | "bodyRegion" | "side" | "createdAt" | "updatedAt", ExtArgs["result"]["skinArea"]>
 export type SkinAreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   journey?: boolean | Prisma.JourneyDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.SkinArea$photosArgs<ExtArgs>
+  _count?: boolean | Prisma.SkinAreaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SkinAreaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   journey?: boolean | Prisma.JourneyDefaultArgs<ExtArgs>
@@ -470,6 +585,7 @@ export type $SkinAreaPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "SkinArea"
   objects: {
     journey: Prisma.$JourneyPayload<ExtArgs>
+    photos: Prisma.$PhotoRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -873,6 +989,7 @@ readonly fields: SkinAreaFieldRefs;
 export interface Prisma__SkinAreaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   journey<T extends Prisma.JourneyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JourneyDefaultArgs<ExtArgs>>): Prisma.Prisma__JourneyClient<runtime.Types.Result.GetResult<Prisma.$JourneyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  photos<T extends Prisma.SkinArea$photosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SkinArea$photosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1306,6 +1423,30 @@ export type SkinAreaDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many SkinAreas to delete.
    */
   limit?: number
+}
+
+/**
+ * SkinArea.photos
+ */
+export type SkinArea$photosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PhotoRecord
+   */
+  select?: Prisma.PhotoRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PhotoRecord
+   */
+  omit?: Prisma.PhotoRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PhotoRecordInclude<ExtArgs> | null
+  where?: Prisma.PhotoRecordWhereInput
+  orderBy?: Prisma.PhotoRecordOrderByWithRelationInput | Prisma.PhotoRecordOrderByWithRelationInput[]
+  cursor?: Prisma.PhotoRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PhotoRecordScalarFieldEnum | Prisma.PhotoRecordScalarFieldEnum[]
 }
 
 /**

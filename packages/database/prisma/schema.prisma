@@ -113,6 +113,7 @@ model Journey {
   updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   skinArea       SkinArea?
+  photos         PhotoRecord[]
 
   @@index([userId, createdAt])
   @@map("journeys")
@@ -126,6 +127,30 @@ model SkinArea {
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
   journey    Journey  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  photos     PhotoRecord[]
 
   @@map("skin_areas")
+}
+
+model PhotoRecord {
+  id               String   @id @db.Uuid
+  journeyId        String   @map("journey_id") @db.Uuid
+  skinAreaId       String   @map("skin_area_id") @db.Uuid
+  capturedAt       DateTime @map("captured_at") @db.Timestamptz(3)
+  storageKey       String   @unique @map("storage_key") @db.VarChar(255)
+  width            Int
+  height           Int
+  orientation      String   @db.VarChar(16)
+  framing          String   @db.VarChar(24)
+  distance         String   @db.VarChar(24)
+  lighting         String   @db.VarChar(24)
+  qualityStatus    String   @map("quality_status") @db.VarChar(24)
+  processingStatus String   @map("processing_status") @db.VarChar(24)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  journey          Journey  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  skinArea         SkinArea @relation(fields: [skinAreaId], references: [id], onDelete: Cascade)
+
+  @@index([journeyId, capturedAt])
+  @@index([skinAreaId, capturedAt])
+  @@map("photo_records")
 }
