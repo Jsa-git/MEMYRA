@@ -30,3 +30,10 @@ PostgreSQL quando o adapter de autenticação omite o identificador. A migration
 é retrocompatível com chamadores que enviam o próprio UUID. Em caso de
 regressão antes de novos dados, remova apenas os defaults; não remova colunas ou
 registros. Depois de uso em produção, corrija com uma nova migration.
+
+## Compatibilidade do Better Auth
+
+A versão instalada do Better Auth (1.7.2) exige `accounts.issuer` e identifica
+contas pela combinação `(issuer, account_id)`. Antes de atualizar o Better Auth,
+revise o guia de upgrade e gere o schema esperado pela CLI para detectar mudanças
+de contrato antes do deploy.
