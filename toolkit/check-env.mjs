@@ -4,6 +4,7 @@ const env = await readFile('.env.example', 'utf8');
 const required = [
   'APP_ENV=',
   'DATABASE_URL=',
+  'DIRECT_URL=',
   'BETTER_AUTH_URL=',
   'BETTER_AUTH_SECRET=',
   'S3_BUCKET=',
