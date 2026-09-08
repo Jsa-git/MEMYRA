@@ -1,5 +1,4 @@
 import { getJourney } from '@memyra/application';
-import { Surface } from '@memyra/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { headers } from 'next/headers';
@@ -11,6 +10,7 @@ import { getDatabase } from '../../../../src/server/database';
 import { JourneyActions } from '../../../components/journey-actions';
 import { PhotoJournal } from '../../../components/photo-journal';
 import { RoutinePanel } from '../../../components/routine-panel';
+import { JourneyPath } from '../../../components/journey-path';
 
 export const metadata: Metadata = { title: 'Jornada' };
 export const dynamic = 'force-dynamic';
@@ -76,9 +76,33 @@ export default async function JourneyDetailPage({
     );
     const prisma = getDatabase();
     const [photos, photoConsent, routinePlan] = await Promise.all([
-      prisma.photoRecord.findMany({ where: { journeyId: journey.id }, orderBy: { capturedAt: 'desc' }, select: { id: true, capturedAt: true, width: true, height: true, orientation: true } }),
-      prisma.consentRecord.findFirst({ where: { userId: journey.userId, type: 'PHOTO_PROCESSING', accepted: true, revokedAt: null }, select: { id: true } }),
-      prisma.routinePlan.findUnique({ where: { journeyId: journey.id }, select: { durationDays: true, photoIntervalDays: true, periods: true, checkIns: { orderBy: { localDate: 'desc' }, take: 180, select: { localDate: true, period: true, completed: true } } } }),
+      prisma.photoRecord.findMany({
+        where: { journeyId: journey.id },
+        orderBy: { capturedAt: 'desc' },
+        select: { id: true, capturedAt: true, width: true, height: true, orientation: true },
+      }),
+      prisma.consentRecord.findFirst({
+        where: {
+          userId: journey.userId,
+          type: 'PHOTO_PROCESSING',
+          accepted: true,
+          revokedAt: null,
+        },
+        select: { id: true },
+      }),
+      prisma.routinePlan.findUnique({
+        where: { journeyId: journey.id },
+        select: {
+          durationDays: true,
+          photoIntervalDays: true,
+          periods: true,
+          checkIns: {
+            orderBy: { localDate: 'desc' },
+            take: 180,
+            select: { localDate: true, period: true, completed: true },
+          },
+        },
+      }),
     ]);
     return (
       <main className="page-shell">
@@ -88,35 +112,49 @@ export default async function JourneyDetailPage({
         >
           ← Suas jornadas
         </Link>
-        <p className="pt-8 text-xs font-bold uppercase tracking-[.19em] text-forest">
-          Jornada REEDUCA
-        </p>
-        <h1 className="title-display mt-4">{journey.name}</h1>
-        <p className="mt-3 text-graphite/60">
-          Dia {day} · {skinAreaLabels[journey.skinArea.region]} ·{' '}
-          {sideLabels[journey.skinArea.side]}
-        </p>
-        <Surface className="mt-10 p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-forest">Onde estou</p>
-          <h2 className="mt-3 font-serif text-3xl">Sua jornada está pronta para continuar.</h2>
-          <p className="mt-3 text-sm leading-6 text-graphite/62">
-            Contexto percebido: {contextLabels[journey.context]}. Seu primeiro registro visual será
-            o próximo passo quando essa etapa estiver disponível.
+        <div className="pt-7 text-center">
+          <p className="text-[0.68rem] font-bold uppercase tracking-[.22em] text-forest">
+            Jornada REEDUCA · Dia {day}
           </p>
-        </Surface>
-        <dl className="mt-6 grid gap-3 border-y border-graphite/10 py-5 text-sm">
-          <div className="flex justify-between gap-4">
-            <dt className="text-graphite/55">Tempo percebido</dt>
-            <dd className="text-right font-semibold">{ageLabels[journey.approximateAge]}</dd>
-          </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-graphite/55">Objetivo</dt>
-            <dd className="text-right font-semibold">{goalLabels[journey.goal]}</dd>
-          </div>
-        </dl>
+          <h1 className="mt-3 font-serif text-[clamp(2.8rem,13vw,4.4rem)] leading-[.88] tracking-[-.045em]">
+            {journey.name}
+          </h1>
+          <p className="mt-4 text-sm text-graphite/58">
+            {skinAreaLabels[journey.skinArea.region]} · {sideLabels[journey.skinArea.side]}
+          </p>
+        </div>
+        <JourneyPath journeyId={journey.id} day={day} plan={routinePlan} photos={photos} />
+        <details className="mx-auto mt-7 max-w-xl rounded-2xl border border-graphite/10 bg-surface/65 px-5 py-4">
+          <summary className="cursor-pointer text-sm font-semibold text-forest">
+            Contexto desta jornada
+          </summary>
+          <p className="mt-3 text-sm leading-6 text-graphite/62">
+            Contexto informado: {contextLabels[journey.context]}. Este registro organiza sua
+            percepção cosmética e não representa diagnóstico.
+          </p>
+          <dl className="mt-4 grid gap-3 border-t border-graphite/10 pt-4 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-graphite/55">Tempo percebido</dt>
+              <dd className="text-right font-semibold">{ageLabels[journey.approximateAge]}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-graphite/55">Objetivo</dt>
+              <dd className="text-right font-semibold">{goalLabels[journey.goal]}</dd>
+            </div>
+          </dl>
+        </details>
         <JourneyActions id={journey.id} status={journey.status} />
-        <RoutinePanel journeyId={journey.id} plan={routinePlan} />
-        <PhotoJournal journeyId={journey.id} photos={photos} hasConsent={Boolean(photoConsent)} canCapture={journey.status === 'ACTIVE'} />
+        <div id="rotina" className="scroll-mt-8">
+          <RoutinePanel journeyId={journey.id} plan={routinePlan} />
+        </div>
+        <div id="fotografia" className="scroll-mt-8">
+          <PhotoJournal
+            journeyId={journey.id}
+            photos={photos}
+            hasConsent={Boolean(photoConsent)}
+            canCapture={journey.status === 'ACTIVE'}
+          />
+        </div>
       </main>
     );
   } catch (error) {

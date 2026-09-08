@@ -7,7 +7,7 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <>
       <header
-        className="mx-auto flex w-full max-w-3xl items-center justify-between px-5 pt-5"
+        className="mx-auto flex w-full max-w-xl items-center justify-between px-5 pt-5"
         aria-label="Cabeçalho principal"
       >
         <Link

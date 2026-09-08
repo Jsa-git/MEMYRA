@@ -34,3 +34,9 @@ Cada checkpoint possui fotografia, data, região, orientação, iluminação, di
 - Upload original perde EXIF/GPS antes do storage privado.
 - Checkpoints de outro usuário retornam 404 uniforme.
 - Sem provider/protocolo aprovado, a UI mostra estado pendente claro e não inventa análise ou tratamento.
+
+## Trilha da Memória
+
+A home responde primeiro “qual é o cuidado de hoje?” e apresenta uma única ação recomendada. A página da jornada organiza a trajetória como uma trilha com os estados concluído, atual, próximo e bloqueado. Os marcos iniciais são início, primeira fotografia, ciclo de cuidado, check-in do dia, próxima fotografia e comparação.
+
+Gamificação é adulta e não competitiva: consistência recente, progresso do ciclo, memórias registradas e celebrações discretas. Não existem moedas, ranking, punição por quebra de sequência ou indicadores de saúde da pele.

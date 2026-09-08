@@ -10,6 +10,8 @@
   --color-forest-light: #356454;
   --color-surface: #fffdf7;
   --color-clay: #a16f5b;
+  --color-moss: #769386;
+  --color-glow: #d9c9a7;
   --font-sans: var(--font-memyra-sans);
   --font-serif: var(--font-memyra-serif);
   --shadow-soft: 0 12px 40px rgb(36 38 34 / 8%);
@@ -26,7 +28,9 @@
   body {
     min-height: 100vh;
     margin: 0;
-    background: var(--color-ivory);
+    background:
+      radial-gradient(circle at 50% -8rem, rgb(217 201 167 / 34%), transparent 30rem),
+      var(--color-ivory);
     font-family: var(--font-sans), sans-serif;
   }
   a {
@@ -47,6 +51,34 @@
   width: 100%;
   max-width: 48rem;
   padding: 1.5rem 1.25rem 7rem;
+}
+
+@keyframes memyra-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgb(35 72 59 / 16%);
+  }
+  50% {
+    transform: scale(1.035);
+    box-shadow: 0 0 0 0.6rem rgb(35 72 59 / 0%);
+  }
+}
+
+@utility current-step {
+  animation: memyra-breathe 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .current-step {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @utility title-display {
