@@ -96,6 +96,7 @@ model ConsentRecord {
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, type, createdAt])
+  @@unique([userId, type, version])
   @@map("consent_records")
 }
 

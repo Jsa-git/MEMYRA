@@ -37,3 +37,9 @@ A versão instalada do Better Auth (1.7.2) exige `accounts.issuer` e identifica
 contas pela combinação `(issuer, account_id)`. Antes de atualizar o Better Auth,
 revise o guia de upgrade e gere o schema esperado pela CLI para detectar mudanças
 de contrato antes do deploy.
+
+Consentimentos são imutáveis e versionados. A combinação de usuário, finalidade
+e versão é única. A exclusão de conta usa a FK com `ON DELETE CASCADE` para
+remover sessões, contas de autenticação, consentimentos e jornadas no mesmo
+banco. A inclusão futura de object storage deverá estender o runbook com uma
+fila auditável de exclusão das fotografias antes de liberar essa função.

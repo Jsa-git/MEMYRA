@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createJourney, getJourney, listJourneys, updateJourneyStatus } from '@memyra/application';
+import { createJourney, getJourney, listJourneys, updateJourney, updateJourneyStatus } from '@memyra/application';
 import type { Journey, JourneyRepository } from '@memyra/domain';
 
 const input = {
@@ -17,6 +17,7 @@ describe('Journey application', () => {
       create: vi.fn(),
       findByIdForUser: vi.fn(),
       listForUser: vi.fn().mockResolvedValue([]),
+      updateForUser: vi.fn(),
       updateStatusForUser: vi.fn(),
       ...overrides,
     };
@@ -72,5 +73,23 @@ describe('Journey application', () => {
     );
 
     expect(updateStatusForUser).toHaveBeenCalledWith('journey-id', 'owner-id', 'COMPLETED', now);
+  });
+
+  it('trims and scopes journey detail updates to the current actor', async () => {
+    const updateForUser = vi.fn().mockResolvedValue(null);
+    const now = new Date('2026-09-04T12:00:00.000Z');
+    await updateJourney(
+      { userId: 'owner-id' },
+      'journey-id',
+      input,
+      repository({ updateForUser }),
+      () => now,
+    );
+    expect(updateForUser).toHaveBeenCalledWith(
+      'journey-id',
+      'owner-id',
+      { ...input, name: 'Minha jornada' },
+      now,
+    );
   });
 });

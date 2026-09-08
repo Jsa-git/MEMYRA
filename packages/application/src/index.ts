@@ -57,3 +57,18 @@ export async function updateJourneyStatus(
 ): Promise<Journey | null> {
   return repository.updateStatusForUser(journeyId, actor.userId, status, now());
 }
+
+export async function updateJourney(
+  actor: ActorContext,
+  journeyId: string,
+  input: CreateJourneyInput,
+  repository: JourneyRepository,
+  now: () => Date,
+): Promise<Journey | null> {
+  return repository.updateForUser(
+    journeyId,
+    actor.userId,
+    { ...input, name: input.name.trim() },
+    now(),
+  );
+}

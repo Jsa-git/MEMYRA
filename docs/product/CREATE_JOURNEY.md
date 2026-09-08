@@ -2,11 +2,11 @@
 
 ## Resultado
 
-Uma pessoa em desenvolvimento inicia a jornada REEDUCA, escolhe região/lado, contexto percebido, tempo aproximado e objetivo cosmético, revisa os dados, cria a jornada no PostgreSQL e consegue reabri-la.
+Uma pessoa autenticada inicia a jornada REEDUCA, escolhe região/lado, contexto percebido, tempo aproximado e objetivo cosmético, revisa os dados, cria a jornada no PostgreSQL, reabre, edita, arquiva e reativa o acompanhamento.
 
 ## Escopo
 
-Inclui UI mobile-first, domínio, validação, caso de uso, repository Prisma, migration e seed do ator fictício. Não inclui autenticação, fotos, rotina, check-in, IA, analytics ou texto médico livre.
+Inclui UI mobile-first, autenticação, consentimentos essenciais versionados, domínio, validação, casos de uso, repository Prisma, edição e arquivamento. Não inclui fotos, rotina, check-in, IA, analytics ou texto médico livre.
 
 ## Vocabulário
 
@@ -22,3 +22,6 @@ Contextos: marca pós-acne; marca após machucado; alteração de tonalidade; ma
 - Refresh mantém dados persistidos.
 - Em produção, o ator fictício não pode ser habilitado.
 - Nenhuma linguagem sugere diagnóstico, cura ou eficácia garantida.
+- Edição e status sempre exigem ownership e preservam a data inicial.
+- Cadastro exige aceite explícito dos termos e da política de privacidade.
+- Exclusão confirmada remove a conta e seus dados relacionais por cascade.

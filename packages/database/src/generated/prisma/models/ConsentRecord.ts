@@ -223,6 +223,7 @@ export type ConsentRecordOrderByWithRelationInput = {
 
 export type ConsentRecordWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId_type_version?: Prisma.ConsentRecordUserIdTypeVersionCompoundUniqueInput
   AND?: Prisma.ConsentRecordWhereInput | Prisma.ConsentRecordWhereInput[]
   OR?: Prisma.ConsentRecordWhereInput[]
   NOT?: Prisma.ConsentRecordWhereInput | Prisma.ConsentRecordWhereInput[]
@@ -234,7 +235,7 @@ export type ConsentRecordWhereUniqueInput = Prisma.AtLeast<{
   revokedAt?: Prisma.DateTimeNullableFilter<"ConsentRecord"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ConsentRecord"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "userId_type_version">
 
 export type ConsentRecordOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -348,6 +349,12 @@ export type ConsentRecordListRelationFilter = {
 
 export type ConsentRecordOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ConsentRecordUserIdTypeVersionCompoundUniqueInput = {
+  userId: string
+  type: $Enums.ConsentType
+  version: string
 }
 
 export type ConsentRecordCountOrderByAggregateInput = {

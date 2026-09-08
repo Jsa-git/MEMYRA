@@ -6,6 +6,7 @@ async function register(page: Page, email: string) {
   await page.goto('/register');
   await page.getByLabel('E-mail').fill(email);
   await page.getByLabel('Senha').fill(password);
+  await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Criar conta' }).click();
   await expect(page).toHaveURL(/\/journey$/);
 }
@@ -86,4 +87,15 @@ test('persists an owned journey across login and denies cross-user access', asyn
   await expect(page.getByText(journeyName, { exact: true })).toBeVisible();
   await page.getByText(journeyName, { exact: true }).click();
   await expect(page.getByRole('heading', { name: journeyName })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Editar informações' }).click();
+  await page.getByLabel('Nome').fill(`${journeyName} editada`);
+  await page.getByRole('button', { name: 'Salvar alterações' }).click();
+  await expect(page.getByRole('heading', { name: `${journeyName} editada` })).toBeVisible();
+  await page.getByRole('button', { name: 'Arquivar jornada' }).click();
+  await expect(page.getByRole('button', { name: 'Reativar jornada' })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Ajustes' }).click();
+  await expect(page.getByText('Termos de uso')).toBeVisible();
+  await expect(page.getByText('Política de privacidade')).toBeVisible();
 });

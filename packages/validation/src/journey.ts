@@ -29,6 +29,7 @@ export const createJourneyInputSchema: z.ZodType<CreateJourneyInput> = z.strictO
   goal: z.enum(JOURNEY_GOALS),
 });
 export type ValidatedCreateJourneyInput = z.infer<typeof createJourneyInputSchema>;
+export const updateJourneyInputSchema = createJourneyInputSchema;
 
 export const updateJourneyStatusInputSchema = z.strictObject({
   status: z.enum(JOURNEY_STATUSES),

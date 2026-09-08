@@ -1,32 +1,26 @@
-import { Surface } from '@memyra/ui';
+import { headers } from 'next/headers';
 import { PageIntro } from '../../components/app-shell';
+import { AccountSettings } from '../../components/account-settings';
+import { requireCurrentActor } from '../../../src/server/current-actor';
+import { getDatabase } from '../../../src/server/database';
 
 export const metadata = { title: 'Ajustes' };
 
-export default function SettingsPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function SettingsPage() {
+  const actor = await requireCurrentActor(await headers());
+  const consents = await getDatabase().consentRecord.findMany({
+    where: { userId: actor.userId, accepted: true, revokedAt: null },
+    distinct: ['type'], orderBy: { createdAt: 'desc' },
+    select: { type: true, version: true, acceptedAt: true },
+  });
   return (
     <main className="page-shell">
       <PageIntro eyebrow="Preferências" title="Você controla sua experiência.">
         <p>Conta, consentimentos, notificações e dados pessoais serão gerenciados nesta área.</p>
       </PageIntro>
-      <Surface className="divide-y divide-graphite/8">
-        {['Conta e acesso', 'Privacidade e consentimentos', 'Notificações', 'Seus dados'].map(
-          (item) => (
-            <button
-              type="button"
-              disabled
-              key={item}
-              className="flex min-h-14 w-full items-center justify-between px-5 text-left text-sm font-medium disabled:opacity-55"
-            >
-              <span>{item}</span>
-              <span aria-hidden="true">›</span>
-            </button>
-          ),
-        )}
-      </Surface>
-      <p className="mt-5 text-center text-xs text-graphite/50">
-        Configurações estarão disponíveis nas próximas etapas.
-      </p>
+      <AccountSettings consents={consents} />
     </main>
   );
 }

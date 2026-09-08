@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 
 import { requireCurrentActor } from '../../../../src/server/current-actor';
 import { getJourneyServices } from '../../../../src/server/journey-services';
+import { JourneyActions } from '../../../components/journey-actions';
 
 export const metadata: Metadata = { title: 'Jornada' };
 export const dynamic = 'force-dynamic';
@@ -104,6 +105,7 @@ export default async function JourneyDetailPage({
             <dd className="text-right font-semibold">{goalLabels[journey.goal]}</dd>
           </div>
         </dl>
+        <JourneyActions id={journey.id} status={journey.status} />
       </main>
     );
   } catch (error) {

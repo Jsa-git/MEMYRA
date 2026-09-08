@@ -4,6 +4,7 @@ import type {
   JourneyGoal,
   JourneyStatus,
   JourneyRepository,
+  CreateJourneyInput,
   SkinAreaRegion,
   SkinAreaSide,
 } from '@memyra/domain';
@@ -24,7 +25,7 @@ type JourneyRow = {
   skinArea: { bodyRegion: string; side: string } | null;
 };
 
-export type JourneyPrismaClient = Pick<PrismaClient, 'journey' | '$transaction'>;
+export type JourneyPrismaClient = Pick<PrismaClient, 'journey' | 'skinArea' | '$transaction'>;
 
 /** Prisma adapter for the Journey aggregate. Ownership is part of every read. */
 export class PrismaJourneyRepository implements JourneyRepository {
@@ -89,6 +90,36 @@ export class PrismaJourneyRepository implements JourneyRepository {
       });
       if (result.count !== 1) return null;
 
+      const row = await transaction.journey.findFirst({
+        where: { id, userId },
+        include: { skinArea: true },
+      });
+      return row ? mapJourney(row) : null;
+    });
+  }
+
+  async updateForUser(
+    id: string,
+    userId: string,
+    input: CreateJourneyInput,
+    updatedAt: Date,
+  ): Promise<Journey | null> {
+    return this.prisma.$transaction(async (transaction) => {
+      const result = await transaction.journey.updateMany({
+        where: { id, userId },
+        data: {
+          name: input.name,
+          context: input.context,
+          approximateAge: input.approximateAge,
+          goal: input.goal,
+          updatedAt,
+        },
+      });
+      if (result.count !== 1) return null;
+      await transaction.skinArea.update({
+        where: { journeyId: id },
+        data: { bodyRegion: input.skinArea.region, side: input.skinArea.side, updatedAt },
+      });
       const row = await transaction.journey.findFirst({
         where: { id, userId },
         include: { skinArea: true },

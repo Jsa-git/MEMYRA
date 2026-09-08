@@ -36,6 +36,18 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         return;
       }
 
+      if (isRegister) {
+        const consentResponse = await fetch('/api/consents', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ types: ['TERMS', 'PRIVACY'], version: '2026-09-08' }),
+        });
+        if (!consentResponse.ok) {
+          setError('Sua conta foi criada, mas não foi possível registrar os consentimentos. Entre novamente para continuar.');
+          return;
+        }
+      }
+
       router.replace('/journey');
       router.refresh();
     } catch {
@@ -70,6 +82,13 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
             className="mt-2 min-h-12 w-full rounded-2xl border border-graphite/20 bg-surface px-4 text-base outline-none focus:border-forest focus:ring-2 focus:ring-forest/20"
           />
         </div>
+
+        {isRegister && (
+          <label className="flex items-start gap-3 text-sm leading-5 text-graphite/70">
+            <input type="checkbox" name="consent" required className="mt-1 size-4 accent-forest" />
+            <span>Li e aceito os Termos de Uso e a Política de Privacidade da MEMYRA.</span>
+          </label>
+        )}
         <div>
           <label className="text-sm font-semibold" htmlFor="password">
             Senha
