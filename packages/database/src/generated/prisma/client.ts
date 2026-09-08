@@ -72,6 +72,16 @@ export type ConsentRecord = Prisma.ConsentRecordModel
  */
 export type Journey = Prisma.JourneyModel
 /**
+ * Model RoutinePlan
+ * 
+ */
+export type RoutinePlan = Prisma.RoutinePlanModel
+/**
+ * Model RoutineCheckIn
+ * 
+ */
+export type RoutineCheckIn = Prisma.RoutineCheckInModel
+/**
  * Model SkinArea
  * 
  */

@@ -403,6 +403,8 @@ export const ModelName = {
   Verification: 'Verification',
   ConsentRecord: 'ConsentRecord',
   Journey: 'Journey',
+  RoutinePlan: 'RoutinePlan',
+  RoutineCheckIn: 'RoutineCheckIn',
   SkinArea: 'SkinArea',
   PhotoRecord: 'PhotoRecord'
 } as const
@@ -420,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "consentRecord" | "journey" | "skinArea" | "photoRecord"
+    modelProps: "user" | "session" | "account" | "verification" | "consentRecord" | "journey" | "routinePlan" | "routineCheckIn" | "skinArea" | "photoRecord"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -868,6 +870,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RoutinePlan: {
+      payload: Prisma.$RoutinePlanPayload<ExtArgs>
+      fields: Prisma.RoutinePlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoutinePlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoutinePlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>
+        }
+        findFirst: {
+          args: Prisma.RoutinePlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoutinePlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>
+        }
+        findMany: {
+          args: Prisma.RoutinePlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>[]
+        }
+        create: {
+          args: Prisma.RoutinePlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>
+        }
+        createMany: {
+          args: Prisma.RoutinePlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoutinePlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>[]
+        }
+        delete: {
+          args: Prisma.RoutinePlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>
+        }
+        update: {
+          args: Prisma.RoutinePlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.RoutinePlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoutinePlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoutinePlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.RoutinePlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutinePlanPayload>
+        }
+        aggregate: {
+          args: Prisma.RoutinePlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoutinePlan>
+        }
+        groupBy: {
+          args: Prisma.RoutinePlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoutinePlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoutinePlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoutinePlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    RoutineCheckIn: {
+      payload: Prisma.$RoutineCheckInPayload<ExtArgs>
+      fields: Prisma.RoutineCheckInFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoutineCheckInFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoutineCheckInFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>
+        }
+        findFirst: {
+          args: Prisma.RoutineCheckInFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoutineCheckInFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>
+        }
+        findMany: {
+          args: Prisma.RoutineCheckInFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>[]
+        }
+        create: {
+          args: Prisma.RoutineCheckInCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>
+        }
+        createMany: {
+          args: Prisma.RoutineCheckInCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoutineCheckInCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>[]
+        }
+        delete: {
+          args: Prisma.RoutineCheckInDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>
+        }
+        update: {
+          args: Prisma.RoutineCheckInUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>
+        }
+        deleteMany: {
+          args: Prisma.RoutineCheckInDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoutineCheckInUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoutineCheckInUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>[]
+        }
+        upsert: {
+          args: Prisma.RoutineCheckInUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutineCheckInPayload>
+        }
+        aggregate: {
+          args: Prisma.RoutineCheckInAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoutineCheckIn>
+        }
+        groupBy: {
+          args: Prisma.RoutineCheckInGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoutineCheckInGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoutineCheckInCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoutineCheckInCountAggregateOutputType> | number
+        }
+      }
+    }
     SkinArea: {
       payload: Prisma.$SkinAreaPayload<ExtArgs>
       fields: Prisma.SkinAreaFieldRefs
@@ -1062,7 +1212,8 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  onboardingCompletedAt: 'onboardingCompletedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -1144,6 +1295,32 @@ export const JourneyScalarFieldEnum = {
 export type JourneyScalarFieldEnum = (typeof JourneyScalarFieldEnum)[keyof typeof JourneyScalarFieldEnum]
 
 
+export const RoutinePlanScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  durationDays: 'durationDays',
+  photoIntervalDays: 'photoIntervalDays',
+  periods: 'periods',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoutinePlanScalarFieldEnum = (typeof RoutinePlanScalarFieldEnum)[keyof typeof RoutinePlanScalarFieldEnum]
+
+
+export const RoutineCheckInScalarFieldEnum = {
+  id: 'id',
+  routinePlanId: 'routinePlanId',
+  localDate: 'localDate',
+  period: 'period',
+  completed: 'completed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoutineCheckInScalarFieldEnum = (typeof RoutineCheckInScalarFieldEnum)[keyof typeof RoutineCheckInScalarFieldEnum]
+
+
 export const SkinAreaScalarFieldEnum = {
   id: 'id',
   journeyId: 'journeyId',
@@ -1158,6 +1335,7 @@ export type SkinAreaScalarFieldEnum = (typeof SkinAreaScalarFieldEnum)[keyof typ
 
 export const PhotoRecordScalarFieldEnum = {
   id: 'id',
+  uploadId: 'uploadId',
   journeyId: 'journeyId',
   skinAreaId: 'skinAreaId',
   capturedAt: 'capturedAt',
@@ -1453,6 +1631,8 @@ export type GlobalOmitConfig = {
   verification?: Prisma.VerificationOmit
   consentRecord?: Prisma.ConsentRecordOmit
   journey?: Prisma.JourneyOmit
+  routinePlan?: Prisma.RoutinePlanOmit
+  routineCheckIn?: Prisma.RoutineCheckInOmit
   skinArea?: Prisma.SkinAreaOmit
   photoRecord?: Prisma.PhotoRecordOmit
 }

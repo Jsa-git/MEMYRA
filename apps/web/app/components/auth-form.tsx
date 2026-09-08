@@ -48,7 +48,13 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         }
       }
 
-      router.replace('/journey');
+      let destination = '/journey';
+      if (isRegister) destination = '/onboarding';
+      else {
+        const profile = await fetch('/api/me').then((response) => response.ok ? response.json() as Promise<{ onboardingCompleted: boolean }> : null);
+        if (profile && !profile.onboardingCompleted) destination = '/onboarding';
+      }
+      router.replace(destination);
       router.refresh();
     } catch {
       setError('Não foi possível conectar ao serviço. Tente novamente.');

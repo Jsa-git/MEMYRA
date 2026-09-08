@@ -44,7 +44,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     const form = await request.formData();
     const file = form.get('photo');
-    const metadata = photoMetadataSchema.safeParse(Object.fromEntries(['capturedAt','width','height','orientation','framing','distance','lighting'].map((key) => [key, form.get(key)])));
+    const metadata = photoMetadataSchema.safeParse(Object.fromEntries(['uploadId','capturedAt','width','height','orientation','framing','distance','lighting'].map((key) => [key, form.get(key)])));
     if (!(file instanceof File) || !metadata.success || !allowedTypes.has(file.type) || file.size < 12 || file.size > MAX_PHOTO_BYTES)
       return NextResponse.json({ code: 'INVALID_PHOTO' }, { status: 400 });
     const sourceBytes = await file.arrayBuffer();
@@ -53,19 +53,21 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const capturedAt = new Date(metadata.data.capturedAt);
     if (capturedAt.getTime() > Date.now() + 300_000 || capturedAt.getTime() < Date.now() - 604_800_000)
       return NextResponse.json({ code: 'INVALID_CAPTURE_TIME' }, { status: 400 });
+    const existing = await getDatabase().photoRecord.findFirst({ where: { uploadId: metadata.data.uploadId, journeyId: journey.id }, select: { id: true } });
+    if (existing) return NextResponse.json(existing, { status: 200 });
     const photoId = randomUUID();
     const normalized = await sharp(Buffer.from(sourceBytes), { failOn: 'warning', limitInputPixels: 40_000_000 })
       .rotate().jpeg({ quality: 90, chromaSubsampling: '4:4:4' }).toBuffer({ resolveWithObject: true });
     if (!normalized.info.width || !normalized.info.height || normalized.info.width < 320 || normalized.info.height < 320)
       return NextResponse.json({ code: 'INVALID_PHOTO_DIMENSIONS' }, { status: 400 });
     const orientation = normalized.info.width === normalized.info.height ? 'SQUARE' : normalized.info.width > normalized.info.height ? 'LANDSCAPE' : 'PORTRAIT';
-    uploadedKey = `${randomUUID()}.jpg`;
+    uploadedKey = `${metadata.data.uploadId}.jpg`;
     const normalizedBytes = normalized.data.buffer.slice(
       normalized.data.byteOffset,
       normalized.data.byteOffset + normalized.data.byteLength,
     ) as ArrayBuffer;
     await uploadPrivatePhoto(uploadedKey, normalizedBytes, 'image/jpeg');
-    const photo = await getDatabase().photoRecord.create({ data: { id: photoId, journeyId: journey.id, skinAreaId: journey.skinArea.id, capturedAt, storageKey: uploadedKey, width: normalized.info.width, height: normalized.info.height, orientation, framing: metadata.data.framing, distance: metadata.data.distance, lighting: metadata.data.lighting, qualityStatus: 'ACCEPTED', processingStatus: 'STORED' }, select: { id: true } });
+    const photo = await getDatabase().photoRecord.create({ data: { id: photoId, uploadId: metadata.data.uploadId, journeyId: journey.id, skinAreaId: journey.skinArea.id, capturedAt, storageKey: uploadedKey, width: normalized.info.width, height: normalized.info.height, orientation, framing: metadata.data.framing, distance: metadata.data.distance, lighting: metadata.data.lighting, qualityStatus: 'ACCEPTED', processingStatus: 'STORED' }, select: { id: true } });
     return NextResponse.json(photo, { status: 201 });
   } catch (error) {
     if (uploadedKey) await deletePrivatePhoto(uploadedKey).catch(() => undefined);

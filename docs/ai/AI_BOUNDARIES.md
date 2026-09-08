@@ -1,5 +1,11 @@
 # Limites da IA
 
+## Encaixe na experiência
+
+A IA é contextual e assíncrona: atua após um checkpoint, durante uma comparação ou quando a pessoa pede explicação sobre a rotina. Não existe chat persistente como navegação principal. A aplicação consome um contrato `AIProvider` estruturado e mantém a capacidade desligada até provider, instruções, retenção e avaliação serem aprovados.
+
+O modelo nunca cria o plano de uso. Duração, frequência e intervalo vêm do protocolo oficial ou de uma escolha explícita de acompanhamento feita pela pessoa. Dicas são selecionadas de conteúdo cosmético revisado; não são geradas livremente para uma condição inferida da foto.
+
 ## Pode
 
 Explicar rotina; organizar jornada; responder sobre utilização aprovada; incentivar consistência; orientar captura; ajudar a comparar registros e apontar diferenças visuais aparentes com linguagem cautelosa.

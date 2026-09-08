@@ -21,6 +21,7 @@ model User {
   image         String?
   createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  onboardingCompletedAt DateTime? @map("onboarding_completed_at") @db.Timestamptz(3)
   sessions      Session[]
   accounts      Account[]
   journeys      Journey[]
@@ -114,9 +115,39 @@ model Journey {
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   skinArea       SkinArea?
   photos         PhotoRecord[]
+  routinePlan    RoutinePlan?
 
   @@index([userId, createdAt])
   @@map("journeys")
+}
+
+model RoutinePlan {
+  id                String   @id @db.Uuid
+  journeyId         String   @unique @map("journey_id") @db.Uuid
+  durationDays      Int      @map("duration_days")
+  photoIntervalDays Int      @map("photo_interval_days")
+  periods           String[]
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  journey           Journey  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  checkIns          RoutineCheckIn[]
+
+  @@map("routine_plans")
+}
+
+model RoutineCheckIn {
+  id            String      @id @db.Uuid
+  routinePlanId String      @map("routine_plan_id") @db.Uuid
+  localDate     String      @map("local_date") @db.VarChar(10)
+  period        String      @db.VarChar(16)
+  completed     Boolean
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  routinePlan   RoutinePlan @relation(fields: [routinePlanId], references: [id], onDelete: Cascade)
+
+  @@unique([routinePlanId, localDate, period])
+  @@index([routinePlanId, localDate])
+  @@map("routine_check_ins")
 }
 
 model SkinArea {
@@ -134,6 +165,7 @@ model SkinArea {
 
 model PhotoRecord {
   id               String   @id @db.Uuid
+  uploadId         String   @unique @map("upload_id") @db.Uuid
   journeyId        String   @map("journey_id") @db.Uuid
   skinAreaId       String   @map("skin_area_id") @db.Uuid
   capturedAt       DateTime @map("captured_at") @db.Timestamptz(3)

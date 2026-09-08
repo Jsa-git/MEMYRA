@@ -57,6 +57,8 @@ export const ModelName = {
   Verification: 'Verification',
   ConsentRecord: 'ConsentRecord',
   Journey: 'Journey',
+  RoutinePlan: 'RoutinePlan',
+  RoutineCheckIn: 'RoutineCheckIn',
   SkinArea: 'SkinArea',
   PhotoRecord: 'PhotoRecord'
 } as const
@@ -84,7 +86,8 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  onboardingCompletedAt: 'onboardingCompletedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -166,6 +169,32 @@ export const JourneyScalarFieldEnum = {
 export type JourneyScalarFieldEnum = (typeof JourneyScalarFieldEnum)[keyof typeof JourneyScalarFieldEnum]
 
 
+export const RoutinePlanScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  durationDays: 'durationDays',
+  photoIntervalDays: 'photoIntervalDays',
+  periods: 'periods',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoutinePlanScalarFieldEnum = (typeof RoutinePlanScalarFieldEnum)[keyof typeof RoutinePlanScalarFieldEnum]
+
+
+export const RoutineCheckInScalarFieldEnum = {
+  id: 'id',
+  routinePlanId: 'routinePlanId',
+  localDate: 'localDate',
+  period: 'period',
+  completed: 'completed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoutineCheckInScalarFieldEnum = (typeof RoutineCheckInScalarFieldEnum)[keyof typeof RoutineCheckInScalarFieldEnum]
+
+
 export const SkinAreaScalarFieldEnum = {
   id: 'id',
   journeyId: 'journeyId',
@@ -180,6 +209,7 @@ export type SkinAreaScalarFieldEnum = (typeof SkinAreaScalarFieldEnum)[keyof typ
 
 export const PhotoRecordScalarFieldEnum = {
   id: 'id',
+  uploadId: 'uploadId',
   journeyId: 'journeyId',
   skinAreaId: 'skinAreaId',
   capturedAt: 'capturedAt',

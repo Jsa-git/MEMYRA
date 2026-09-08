@@ -2,6 +2,7 @@ import { PHOTO_ORIENTATIONS } from '@memyra/domain';
 import { z } from 'zod';
 
 export const photoMetadataSchema = z.strictObject({
+  uploadId: z.uuid(),
   capturedAt: z.iso.datetime({ offset: true }),
   width: z.coerce.number().int().min(320).max(12000),
   height: z.coerce.number().int().min(320).max(12000),

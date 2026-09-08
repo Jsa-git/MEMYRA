@@ -38,6 +38,7 @@ export type PhotoRecordSumAggregateOutputType = {
 
 export type PhotoRecordMinAggregateOutputType = {
   id: string | null
+  uploadId: string | null
   journeyId: string | null
   skinAreaId: string | null
   capturedAt: Date | null
@@ -55,6 +56,7 @@ export type PhotoRecordMinAggregateOutputType = {
 
 export type PhotoRecordMaxAggregateOutputType = {
   id: string | null
+  uploadId: string | null
   journeyId: string | null
   skinAreaId: string | null
   capturedAt: Date | null
@@ -72,6 +74,7 @@ export type PhotoRecordMaxAggregateOutputType = {
 
 export type PhotoRecordCountAggregateOutputType = {
   id: number
+  uploadId: number
   journeyId: number
   skinAreaId: number
   capturedAt: number
@@ -101,6 +104,7 @@ export type PhotoRecordSumAggregateInputType = {
 
 export type PhotoRecordMinAggregateInputType = {
   id?: true
+  uploadId?: true
   journeyId?: true
   skinAreaId?: true
   capturedAt?: true
@@ -118,6 +122,7 @@ export type PhotoRecordMinAggregateInputType = {
 
 export type PhotoRecordMaxAggregateInputType = {
   id?: true
+  uploadId?: true
   journeyId?: true
   skinAreaId?: true
   capturedAt?: true
@@ -135,6 +140,7 @@ export type PhotoRecordMaxAggregateInputType = {
 
 export type PhotoRecordCountAggregateInputType = {
   id?: true
+  uploadId?: true
   journeyId?: true
   skinAreaId?: true
   capturedAt?: true
@@ -239,6 +245,7 @@ export type PhotoRecordGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type PhotoRecordGroupByOutputType = {
   id: string
+  uploadId: string
   journeyId: string
   skinAreaId: string
   capturedAt: Date
@@ -279,6 +286,7 @@ export type PhotoRecordWhereInput = {
   OR?: Prisma.PhotoRecordWhereInput[]
   NOT?: Prisma.PhotoRecordWhereInput | Prisma.PhotoRecordWhereInput[]
   id?: Prisma.UuidFilter<"PhotoRecord"> | string
+  uploadId?: Prisma.UuidFilter<"PhotoRecord"> | string
   journeyId?: Prisma.UuidFilter<"PhotoRecord"> | string
   skinAreaId?: Prisma.UuidFilter<"PhotoRecord"> | string
   capturedAt?: Prisma.DateTimeFilter<"PhotoRecord"> | Date | string
@@ -298,6 +306,7 @@ export type PhotoRecordWhereInput = {
 
 export type PhotoRecordOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
   journeyId?: Prisma.SortOrder
   skinAreaId?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
@@ -317,6 +326,7 @@ export type PhotoRecordOrderByWithRelationInput = {
 
 export type PhotoRecordWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  uploadId?: string
   storageKey?: string
   AND?: Prisma.PhotoRecordWhereInput | Prisma.PhotoRecordWhereInput[]
   OR?: Prisma.PhotoRecordWhereInput[]
@@ -335,10 +345,11 @@ export type PhotoRecordWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"PhotoRecord"> | Date | string
   journey?: Prisma.XOR<Prisma.JourneyScalarRelationFilter, Prisma.JourneyWhereInput>
   skinArea?: Prisma.XOR<Prisma.SkinAreaScalarRelationFilter, Prisma.SkinAreaWhereInput>
-}, "id" | "storageKey">
+}, "id" | "uploadId" | "storageKey">
 
 export type PhotoRecordOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
   journeyId?: Prisma.SortOrder
   skinAreaId?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
@@ -364,6 +375,7 @@ export type PhotoRecordScalarWhereWithAggregatesInput = {
   OR?: Prisma.PhotoRecordScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PhotoRecordScalarWhereWithAggregatesInput | Prisma.PhotoRecordScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"PhotoRecord"> | string
+  uploadId?: Prisma.UuidWithAggregatesFilter<"PhotoRecord"> | string
   journeyId?: Prisma.UuidWithAggregatesFilter<"PhotoRecord"> | string
   skinAreaId?: Prisma.UuidWithAggregatesFilter<"PhotoRecord"> | string
   capturedAt?: Prisma.DateTimeWithAggregatesFilter<"PhotoRecord"> | Date | string
@@ -381,6 +393,7 @@ export type PhotoRecordScalarWhereWithAggregatesInput = {
 
 export type PhotoRecordCreateInput = {
   id: string
+  uploadId: string
   capturedAt: Date | string
   storageKey: string
   width: number
@@ -398,6 +411,7 @@ export type PhotoRecordCreateInput = {
 
 export type PhotoRecordUncheckedCreateInput = {
   id: string
+  uploadId: string
   journeyId: string
   skinAreaId: string
   capturedAt: Date | string
@@ -415,6 +429,7 @@ export type PhotoRecordUncheckedCreateInput = {
 
 export type PhotoRecordUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
@@ -432,6 +447,7 @@ export type PhotoRecordUpdateInput = {
 
 export type PhotoRecordUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   journeyId?: Prisma.StringFieldUpdateOperationsInput | string
   skinAreaId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -449,6 +465,7 @@ export type PhotoRecordUncheckedUpdateInput = {
 
 export type PhotoRecordCreateManyInput = {
   id: string
+  uploadId: string
   journeyId: string
   skinAreaId: string
   capturedAt: Date | string
@@ -466,6 +483,7 @@ export type PhotoRecordCreateManyInput = {
 
 export type PhotoRecordUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
@@ -481,6 +499,7 @@ export type PhotoRecordUpdateManyMutationInput = {
 
 export type PhotoRecordUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   journeyId?: Prisma.StringFieldUpdateOperationsInput | string
   skinAreaId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -508,6 +527,7 @@ export type PhotoRecordOrderByRelationAggregateInput = {
 
 export type PhotoRecordCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
   journeyId?: Prisma.SortOrder
   skinAreaId?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
@@ -530,6 +550,7 @@ export type PhotoRecordAvgOrderByAggregateInput = {
 
 export type PhotoRecordMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
   journeyId?: Prisma.SortOrder
   skinAreaId?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
@@ -547,6 +568,7 @@ export type PhotoRecordMaxOrderByAggregateInput = {
 
 export type PhotoRecordMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
   journeyId?: Prisma.SortOrder
   skinAreaId?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
@@ -651,16 +673,9 @@ export type PhotoRecordUncheckedUpdateManyWithoutSkinAreaNestedInput = {
   deleteMany?: Prisma.PhotoRecordScalarWhereInput | Prisma.PhotoRecordScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type PhotoRecordCreateWithoutJourneyInput = {
   id: string
+  uploadId: string
   capturedAt: Date | string
   storageKey: string
   width: number
@@ -677,6 +692,7 @@ export type PhotoRecordCreateWithoutJourneyInput = {
 
 export type PhotoRecordUncheckedCreateWithoutJourneyInput = {
   id: string
+  uploadId: string
   skinAreaId: string
   capturedAt: Date | string
   storageKey: string
@@ -722,6 +738,7 @@ export type PhotoRecordScalarWhereInput = {
   OR?: Prisma.PhotoRecordScalarWhereInput[]
   NOT?: Prisma.PhotoRecordScalarWhereInput | Prisma.PhotoRecordScalarWhereInput[]
   id?: Prisma.UuidFilter<"PhotoRecord"> | string
+  uploadId?: Prisma.UuidFilter<"PhotoRecord"> | string
   journeyId?: Prisma.UuidFilter<"PhotoRecord"> | string
   skinAreaId?: Prisma.UuidFilter<"PhotoRecord"> | string
   capturedAt?: Prisma.DateTimeFilter<"PhotoRecord"> | Date | string
@@ -739,6 +756,7 @@ export type PhotoRecordScalarWhereInput = {
 
 export type PhotoRecordCreateWithoutSkinAreaInput = {
   id: string
+  uploadId: string
   capturedAt: Date | string
   storageKey: string
   width: number
@@ -755,6 +773,7 @@ export type PhotoRecordCreateWithoutSkinAreaInput = {
 
 export type PhotoRecordUncheckedCreateWithoutSkinAreaInput = {
   id: string
+  uploadId: string
   journeyId: string
   capturedAt: Date | string
   storageKey: string
@@ -797,6 +816,7 @@ export type PhotoRecordUpdateManyWithWhereWithoutSkinAreaInput = {
 
 export type PhotoRecordCreateManyJourneyInput = {
   id: string
+  uploadId: string
   skinAreaId: string
   capturedAt: Date | string
   storageKey: string
@@ -813,6 +833,7 @@ export type PhotoRecordCreateManyJourneyInput = {
 
 export type PhotoRecordUpdateWithoutJourneyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
@@ -829,6 +850,7 @@ export type PhotoRecordUpdateWithoutJourneyInput = {
 
 export type PhotoRecordUncheckedUpdateWithoutJourneyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   skinAreaId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -845,6 +867,7 @@ export type PhotoRecordUncheckedUpdateWithoutJourneyInput = {
 
 export type PhotoRecordUncheckedUpdateManyWithoutJourneyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   skinAreaId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -861,6 +884,7 @@ export type PhotoRecordUncheckedUpdateManyWithoutJourneyInput = {
 
 export type PhotoRecordCreateManySkinAreaInput = {
   id: string
+  uploadId: string
   journeyId: string
   capturedAt: Date | string
   storageKey: string
@@ -877,6 +901,7 @@ export type PhotoRecordCreateManySkinAreaInput = {
 
 export type PhotoRecordUpdateWithoutSkinAreaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
   width?: Prisma.IntFieldUpdateOperationsInput | number
@@ -893,6 +918,7 @@ export type PhotoRecordUpdateWithoutSkinAreaInput = {
 
 export type PhotoRecordUncheckedUpdateWithoutSkinAreaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   journeyId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -909,6 +935,7 @@ export type PhotoRecordUncheckedUpdateWithoutSkinAreaInput = {
 
 export type PhotoRecordUncheckedUpdateManyWithoutSkinAreaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadId?: Prisma.StringFieldUpdateOperationsInput | string
   journeyId?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   storageKey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -927,6 +954,7 @@ export type PhotoRecordUncheckedUpdateManyWithoutSkinAreaInput = {
 
 export type PhotoRecordSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  uploadId?: boolean
   journeyId?: boolean
   skinAreaId?: boolean
   capturedAt?: boolean
@@ -946,6 +974,7 @@ export type PhotoRecordSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type PhotoRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  uploadId?: boolean
   journeyId?: boolean
   skinAreaId?: boolean
   capturedAt?: boolean
@@ -965,6 +994,7 @@ export type PhotoRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 
 export type PhotoRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  uploadId?: boolean
   journeyId?: boolean
   skinAreaId?: boolean
   capturedAt?: boolean
@@ -984,6 +1014,7 @@ export type PhotoRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 
 export type PhotoRecordSelectScalar = {
   id?: boolean
+  uploadId?: boolean
   journeyId?: boolean
   skinAreaId?: boolean
   capturedAt?: boolean
@@ -999,7 +1030,7 @@ export type PhotoRecordSelectScalar = {
   createdAt?: boolean
 }
 
-export type PhotoRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "journeyId" | "skinAreaId" | "capturedAt" | "storageKey" | "width" | "height" | "orientation" | "framing" | "distance" | "lighting" | "qualityStatus" | "processingStatus" | "createdAt", ExtArgs["result"]["photoRecord"]>
+export type PhotoRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "uploadId" | "journeyId" | "skinAreaId" | "capturedAt" | "storageKey" | "width" | "height" | "orientation" | "framing" | "distance" | "lighting" | "qualityStatus" | "processingStatus" | "createdAt", ExtArgs["result"]["photoRecord"]>
 export type PhotoRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   journey?: boolean | Prisma.JourneyDefaultArgs<ExtArgs>
   skinArea?: boolean | Prisma.SkinAreaDefaultArgs<ExtArgs>
@@ -1021,6 +1052,7 @@ export type $PhotoRecordPayload<ExtArgs extends runtime.Types.Extensions.Interna
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    uploadId: string
     journeyId: string
     skinAreaId: string
     capturedAt: Date
@@ -1460,6 +1492,7 @@ export interface Prisma__PhotoRecordClient<T, Null = never, ExtArgs extends runt
  */
 export interface PhotoRecordFieldRefs {
   readonly id: Prisma.FieldRef<"PhotoRecord", 'String'>
+  readonly uploadId: Prisma.FieldRef<"PhotoRecord", 'String'>
   readonly journeyId: Prisma.FieldRef<"PhotoRecord", 'String'>
   readonly skinAreaId: Prisma.FieldRef<"PhotoRecord", 'String'>
   readonly capturedAt: Prisma.FieldRef<"PhotoRecord", 'DateTime'>

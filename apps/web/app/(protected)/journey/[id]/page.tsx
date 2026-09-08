@@ -10,6 +10,7 @@ import { getJourneyServices } from '../../../../src/server/journey-services';
 import { getDatabase } from '../../../../src/server/database';
 import { JourneyActions } from '../../../components/journey-actions';
 import { PhotoJournal } from '../../../components/photo-journal';
+import { RoutinePanel } from '../../../components/routine-panel';
 
 export const metadata: Metadata = { title: 'Jornada' };
 export const dynamic = 'force-dynamic';
@@ -74,9 +75,10 @@ export default async function JourneyDetailPage({
       Math.floor((Date.now() - journey.startedAt.getTime()) / 86_400_000) + 1,
     );
     const prisma = getDatabase();
-    const [photos, photoConsent] = await Promise.all([
+    const [photos, photoConsent, routinePlan] = await Promise.all([
       prisma.photoRecord.findMany({ where: { journeyId: journey.id }, orderBy: { capturedAt: 'desc' }, select: { id: true, capturedAt: true, width: true, height: true, orientation: true } }),
       prisma.consentRecord.findFirst({ where: { userId: journey.userId, type: 'PHOTO_PROCESSING', accepted: true, revokedAt: null }, select: { id: true } }),
+      prisma.routinePlan.findUnique({ where: { journeyId: journey.id }, select: { durationDays: true, photoIntervalDays: true, periods: true, checkIns: { orderBy: { localDate: 'desc' }, take: 180, select: { localDate: true, period: true, completed: true } } } }),
     ]);
     return (
       <main className="page-shell">
@@ -113,6 +115,7 @@ export default async function JourneyDetailPage({
           </div>
         </dl>
         <JourneyActions id={journey.id} status={journey.status} />
+        <RoutinePanel journeyId={journey.id} plan={routinePlan} />
         <PhotoJournal journeyId={journey.id} photos={photos} hasConsent={Boolean(photoConsent)} canCapture={journey.status === 'ACTIVE'} />
       </main>
     );
