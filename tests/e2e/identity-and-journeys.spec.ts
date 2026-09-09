@@ -9,10 +9,10 @@ async function register(page: Page, email: string) {
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Criar conta' }).click();
   await expect(page).toHaveURL(/\/onboarding$/);
-  for (let step = 0; step < 3; step += 1)
+  for (let step = 0; step < 2; step += 1)
     await page.getByRole('button', { name: 'Continuar' }).click();
   await page.getByRole('button', { name: 'Começar minha jornada' }).click();
-  await expect(page).toHaveURL(/\/journey\/new$/);
+  await expect(page).toHaveURL(/\/journey\/new\?guided=1$/);
   await page.goto('/journey');
 }
 

@@ -70,7 +70,7 @@ function labelFor<T extends string>(
   return options.find((option) => option.value === value)?.label ?? 'Não informado';
 }
 
-export function JourneyWizard() {
+export function JourneyWizard({ guided = false }: { guided?: boolean }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>({ name: '' });
@@ -140,7 +140,7 @@ export function JourneyWizard() {
         );
         return;
       }
-      router.push(`/journey/${result.id}`);
+      router.push(guided ? `/journey/${result.id}/start` : `/journey/${result.id}`);
     } catch {
       setError('Não foi possível conectar ao serviço. Tente novamente.');
     } finally {
@@ -150,10 +150,10 @@ export function JourneyWizard() {
 
   return (
     <section className="mx-auto max-w-xl pt-8">
-      <Eyebrow>Método REEDUCA</Eyebrow>
+      <Eyebrow>{guided ? 'Preparando sua primeira jornada' : 'Método REEDUCA'}</Eyebrow>
       <div className="mt-5 flex items-center justify-between gap-4">
         <p className="text-sm font-semibold">
-          Etapa {step + 1} de {stepTitles.length}
+          {guided ? 'Passo 2 · ' : ''}Etapa {step + 1} de {stepTitles.length}
         </p>
         <p className="text-sm text-graphite/55">{stepTitles[step]}</p>
       </div>

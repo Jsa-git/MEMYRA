@@ -19,11 +19,13 @@ export function PhotoJournal({
   photos,
   hasConsent,
   canCapture,
+  firstCapture = false,
 }: {
   journeyId: string;
   photos: readonly PhotoView[];
   hasConsent: boolean;
   canCapture: boolean;
+  firstCapture?: boolean;
 }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -177,13 +179,16 @@ export function PhotoJournal({
       className="mx-auto mt-12 w-full max-w-xl text-center"
       aria-labelledby="photo-journal-title"
     >
-      <p className="text-xs font-bold uppercase tracking-[.17em] text-forest">Próximo checkpoint</p>
+      <p className="text-xs font-bold uppercase tracking-[.17em] text-forest">
+        {firstCapture ? 'Passo final · Primeira memória' : 'Próximo checkpoint'}
+      </p>
       <h2 id="photo-journal-title" className="mt-2 font-serif text-3xl">
-        Fotografe a mesma região
+        {firstCapture ? 'Registre onde sua história começa' : 'Fotografe a mesma região'}
       </h2>
       <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-graphite/60">
-        Luz uniforme, região centralizada e distância semelhante tornam a comparação mais
-        consistente.
+        {firstCapture
+          ? 'Abra a câmera, centralize a região e revise a imagem antes de guardar seu primeiro checkpoint.'
+          : 'Luz uniforme, região centralizada e distância semelhante tornam a comparação mais consistente.'}
       </p>
       <Surface className="mt-6 overflow-hidden p-4 sm:p-6">
         {cameraOpen && (

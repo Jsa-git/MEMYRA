@@ -16,6 +16,8 @@ Conduzir a pessoa por um caminho mobile-first simples: entender a proposta, cria
 6. Rotina e registro de uso.
 7. Novo checkpoint e comparação visual cautelosa.
 
+Para novos cadastros, as etapas 2–4 formam um fluxo contínuo: abertura sem navegação concorrente, criação guiada da jornada e captura dedicada da primeira memória. A pessoa pode adiar a fotografia porque ela é um dado sensível; ao enviar, segue diretamente para o checkpoint criado e então para a trilha.
+
 ## IA no fluxo
 
 A IA aparece como assistência contextual, não como conversa permanente. Os pontos de entrada são: orientação de captura, resumo após checkpoint, comparação entre dois registros e explicação da rotina. A saída deve ser estruturada em observações aparentes, qualidade da captura, consist cosmetic-safe e próximos passos já aprovados.
