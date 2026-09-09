@@ -40,3 +40,11 @@ Cada checkpoint possui fotografia, data, região, orientação, iluminação, di
 A home responde primeiro “qual é o cuidado de hoje?” e apresenta uma única ação recomendada. A página da jornada organiza a trajetória como uma trilha com os estados concluído, atual, próximo e bloqueado. Os marcos iniciais são início, primeira fotografia, ciclo de cuidado, check-in do dia, próxima fotografia e comparação.
 
 Gamificação é adulta e não competitiva: consistência recente, progresso do ciclo, memórias registradas e celebrações discretas. Não existem moedas, ranking, punição por quebra de sequência ou indicadores de saúde da pele.
+
+## Comparação visual
+
+Com dois ou mais checkpoints, a trilha desbloqueia a comparação entre o primeiro e o registro mais recente. A experiência oferece controle deslizante e visão lado a lado, datas, intervalo, consistência registrada e comparabilidade técnica. Não produz conclusão clínica nem afirma eficácia. As duas imagens são carregadas somente por URLs assinadas temporárias, após autorização individual de cada objeto.
+
+## Rotina e recompensa
+
+A rotina mostra os sete dias recentes, sequência atual e confirmação discreta após cada check-in. A sequência considera um dia completo quando todos os momentos configurados foram registrados e permanece viva durante o dia corrente; não há mensagem punitiva quando uma sequência termina.

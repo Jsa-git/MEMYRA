@@ -8,7 +8,7 @@
 4. **Upload**: somente após autenticação, ownership e consentimento `PHOTO_PROCESSING` versionado.
 5. **Storage**: adapter Supabase usa chave server-only e bucket `skin-photos` privado; nenhuma chave ou URL assinada é persistida.
 6. **Access**: URL assinada de 60 segundos, emitida somente após autorização por objeto e com `no-store`.
-7. **Comparison**: ainda não implementada; registros permanecem ligados à mesma `SkinArea`.
+7. **Comparison**: primeiro registro e registro mais recente da mesma `SkinArea`, com carregamento por duas URLs assinadas de 60 segundos mantidas apenas na memória do cliente. Nenhuma derivação pública ou URL é persistida.
 8. **Deletion**: remove o objeto antes do registro; exclusão de conta limpa objetos antes do cascade relacional.
 
 O bucket e as credenciais são configuração operacional. Se ausentes, upload falha fechado com `PHOTO_STORAGE_NOT_CONFIGURED`.

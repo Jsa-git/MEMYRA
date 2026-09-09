@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { calculateConsistency, calculateCycleProgress } from '../packages/domain/src/index.js';
+import {
+  calculateConsistency,
+  calculateCycleProgress,
+  calculateRoutineStreak,
+} from '../packages/domain/src/index.js';
 
 describe('journey progress', () => {
   it('keeps cycle progress between zero and one hundred', () => {
@@ -16,5 +20,12 @@ describe('journey progress', () => {
     expect(calculateConsistency({ completedCheckIns: 9, activeDays: 2, periodsPerDay: 2 })).toBe(
       100,
     );
+  });
+
+  it('keeps a streak alive until the current day ends', () => {
+    expect(calculateRoutineStreak(['2026-09-06', '2026-09-07', '2026-09-08'], '2026-09-09')).toBe(
+      3,
+    );
+    expect(calculateRoutineStreak(['2026-09-07', '2026-09-09'], '2026-09-09')).toBe(1);
   });
 });

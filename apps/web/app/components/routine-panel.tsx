@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Surface } from '@memyra/ui';
+import { calculateRoutineStreak } from '@memyra/domain';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -15,6 +16,7 @@ export function RoutinePanel({ journeyId, plan }: { journeyId: string; plan: Pla
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [celebration, setCelebration] = useState('');
   const today = useMemo(
     () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date()),
     [],
@@ -24,6 +26,24 @@ export function RoutinePanel({ journeyId, plan }: { journeyId: string; plan: Pla
       .filter((item) => item.completed)
       .map((item) => `${item.localDate}:${item.period}`),
   );
+  const fullyCompletedDates = plan
+    ? Array.from(new Set(plan.checkIns.map((item) => item.localDate))).filter((date) =>
+        plan.periods.every((period) => completed.has(`${date}:${period}`)),
+      )
+    : [];
+  const streak = calculateRoutineStreak(fullyCompletedDates, today);
+  const week = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - index));
+    const key = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(date);
+    return {
+      key,
+      day: new Intl.DateTimeFormat('pt-BR', { weekday: 'narrow' }).format(date),
+      number: new Intl.DateTimeFormat('pt-BR', { day: '2-digit' }).format(date),
+      done: fullyCompletedDates.includes(key),
+      current: key === today,
+    };
+  });
 
   async function savePlan(formData: FormData) {
     setPending(true);
@@ -52,8 +72,12 @@ export function RoutinePanel({ journeyId, plan }: { journeyId: string; plan: Pla
       body: JSON.stringify({ localDate: today, period, completed: value }),
     });
     setPending(false);
-    if (response.ok) router.refresh();
-    else setError('Não foi possível registrar este check-in.');
+    if (response.ok) {
+      setCelebration(
+        value ? 'Mais um cuidado registrado. Sua jornada continua.' : 'Registro atualizado.',
+      );
+      router.refresh();
+    } else setError('Não foi possível registrar este check-in.');
   }
 
   return (
@@ -152,6 +176,39 @@ export function RoutinePanel({ journeyId, plan }: { journeyId: string; plan: Pla
                 );
               })}
             </div>
+            <div className="mt-6 border-t border-graphite/10 pt-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[.16em] text-forest">
+                    Últimos 7 dias
+                  </p>
+                  <p className="mt-1 text-xs text-graphite/50">
+                    Cada círculo completo é um dia cuidado.
+                  </p>
+                </div>
+                <p className="shrink-0 text-right">
+                  <strong className="block font-serif text-2xl leading-none">{streak}</strong>
+                  <span className="text-[.62rem] text-graphite/50">dias seguidos</span>
+                </p>
+              </div>
+              <ol
+                className="mt-5 grid grid-cols-7 gap-1"
+                aria-label="Consistência nos últimos sete dias"
+              >
+                {week.map((item) => (
+                  <li key={item.key} className="text-center">
+                    <span className="block text-[.6rem] uppercase text-graphite/45">
+                      {item.day}
+                    </span>
+                    <span
+                      className={`mx-auto mt-1 grid size-8 place-items-center rounded-full text-[.66rem] font-bold ${item.done ? 'bg-forest text-ivory' : item.current ? 'border-2 border-forest text-forest' : 'bg-sand/55 text-graphite/45'}`}
+                    >
+                      {item.done ? '✓' : item.number}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
             <p className="mt-4 text-xs leading-5 text-graphite/50">
               Registre apenas a realização. Quantidade e aplicação seguem o rótulo oficial.
             </p>
@@ -160,6 +217,15 @@ export function RoutinePanel({ journeyId, plan }: { journeyId: string; plan: Pla
         {error && (
           <p role="alert" className="mt-4 text-sm text-clay">
             {error}
+          </p>
+        )}
+        {celebration && !error && (
+          <p
+            aria-live="polite"
+            className="mt-4 rounded-2xl bg-forest px-4 py-3 text-center text-sm font-semibold text-ivory"
+          >
+            <span aria-hidden="true">✦ </span>
+            {celebration}
           </p>
         )}
       </Surface>

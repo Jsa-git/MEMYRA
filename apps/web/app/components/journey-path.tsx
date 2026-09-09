@@ -112,7 +112,7 @@ export function JourneyPath({
           title: 'Comparação desbloqueada',
           detail: 'Observe sua trajetória lado a lado',
           state: 'done' as const,
-          href: `/journey/${journeyId}/checkpoint/${photos[0]?.id}`,
+          href: `/journey/${journeyId}/compare`,
         }
       : {
           title: 'Comparação visual',
@@ -170,17 +170,20 @@ export function JourneyPath({
             <div className={`${step.state === 'locked' ? 'opacity-45' : ''}`}>
               <p className="font-semibold leading-5">{step.title}</p>
               <p className="mt-1 text-xs leading-5 text-ivory/58">{step.detail}</p>
-              {step.href && step.state === 'current' && (
-                <Link
-                  href={step.href}
-                  className="mt-3 inline-flex min-h-10 items-center rounded-full bg-ivory px-4 text-xs font-bold text-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ivory"
-                >
-                  Continuar agora{' '}
-                  <span className="ml-2" aria-hidden="true">
-                    →
-                  </span>
-                </Link>
-              )}
+              {step.href &&
+                (step.state === 'current' || step.title === 'Comparação desbloqueada') && (
+                  <Link
+                    href={step.href}
+                    className="mt-3 inline-flex min-h-10 items-center rounded-full bg-ivory px-4 text-xs font-bold text-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ivory"
+                  >
+                    {step.title === 'Comparação desbloqueada'
+                      ? 'Comparar agora'
+                      : 'Continuar agora'}{' '}
+                    <span className="ml-2" aria-hidden="true">
+                      →
+                    </span>
+                  </Link>
+                )}
             </div>
           </li>
         ))}
