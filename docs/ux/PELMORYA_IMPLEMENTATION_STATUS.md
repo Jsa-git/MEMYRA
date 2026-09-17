@@ -10,7 +10,13 @@ Data da implementação: 16/09/2026. Status global da auditoria: **PARTIAL**. A 
 - `npm run verify` repetido em 17/09: exit 0; 56 testes aprovados, 5 de integração ignorados. Revisão independente anterior e smoke público registrados abaixo. Não executar testes destrutivos em produção.
 - Responsável pela exceção: solicitante/proprietário do projeto. Validade: somente esta publicação; pendências devem voltar à avaliação no próximo release.
 - Rollback: restaurar na Vercel o deployment anterior `DDXewMsfSk5Vstg2dQDCfCynEMr7`, origem `4241d6d8c64667a5b50afe40e9e8eea64bab60d6`. Esta entrega não exige reversão de migrations.
-- Publicação solicitada, ainda não confirmada neste registro; conferir status da Vercel e revisão publicada. Os registros abaixo descrevem a etapa local anterior.
+- Publicação da revisão `bb941b1` confirmada na Vercel em 17/09, após rebuild sem cache `BnNmcYcKD5FdSePzWpzjEJ8kodDq` (Ready / Production). As páginas públicas responderam 200 e a paleta publicada foi conferida (`#2b1833`, `#f4ecdf`). Nenhuma conta ou foto foi criada para essa conferência. Os registros abaixo descrevem a etapa local anterior.
+
+### Verificação durante a publicação
+
+- A revisão `bb941b1a33c3e546c85b2fd9bdd134035dbfb90b` foi enviada à `main`. O primeiro build da Vercel respondeu com textos novos e CSS antigo; foi solicitado rebuild sem cache do mesmo código, sem mudar o ambiente.
+- O CI Linux revelou expansão de glob no comando Vitest: com dois arquivos E2E, o shell passava um deles como filtro posicional. Os padrões de exclusão agora recebem aspas e um teste verifica os argumentos efetivamente entregues pelo shell da plataforma. Nenhum teste é removido ou desabilitado por essa correção.
+- A revisão independente da implementação principal permanece registrada. A tentativa de revisão independente adicional deste ajuste de comando ficou indisponível por limite de uso da ferramenta; não contabilizar como revisão concluída.
 
 ## Entregue nesta etapa
 

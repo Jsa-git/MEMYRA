@@ -12,7 +12,7 @@
     "format": "prettier --check AGENTS.md README.md CONTRIBUTING.md SECURITY.md package.json pnpm-workspace.yaml eslint.config.mjs playwright.config.ts apps packages docs skills agents superpowers toolkit tests .github",
     "format:write": "prettier --write AGENTS.md README.md CONTRIBUTING.md SECURITY.md package.json pnpm-workspace.yaml eslint.config.mjs playwright.config.ts apps packages docs skills agents superpowers toolkit tests .github",
     "typecheck": "tsc -b --pretty false && tsc -p tests/tsconfig.json --noEmit --pretty false",
-    "test": "vitest run --exclude tests/e2e/** --exclude work/**",
+    "test": "vitest run --exclude \"tests/e2e/**\" --exclude \"work/**\"",
     "test:e2e": "playwright test",
     "test:e2e:public": "playwright test --config playwright.public.config.ts",
     "build": "pnpm --filter @memyra/web build",
