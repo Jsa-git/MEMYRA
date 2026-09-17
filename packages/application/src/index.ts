@@ -1,4 +1,5 @@
 import type { CreateJourneyInput, Journey, JourneyRepository } from '@memyra/domain';
+export { storePhotoAttempt } from './store-photo-attempt';
 
 export interface ActorContext {
   readonly userId: string;

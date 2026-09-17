@@ -1,5 +1,9 @@
 import { updateJourney, updateJourneyStatus } from '@memyra/application';
-import { journeyIdSchema, updateJourneyInputSchema, updateJourneyStatusInputSchema } from '@memyra/validation';
+import {
+  journeyIdSchema,
+  updateJourneyInputSchema,
+  updateJourneyStatusInputSchema,
+} from '@memyra/validation';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -51,7 +55,13 @@ export async function PUT(
     if (!id.success || !input.success)
       return NextResponse.json({ code: 'VALIDATION_ERROR' }, { status: 400 });
     const services = getJourneyServices();
-    const journey = await updateJourney(actor, id.data, input.data, services.repository, services.now);
+    const journey = await updateJourney(
+      actor,
+      id.data,
+      input.data,
+      services.repository,
+      services.now,
+    );
     if (!journey) return NextResponse.json({ code: 'NOT_FOUND' }, { status: 404 });
     return NextResponse.json({ id: journey.id });
   } catch (error) {

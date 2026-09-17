@@ -1,6 +1,6 @@
 # Escopo previsto do V1
 
-Status: **em implementação por vertical slices**. Identity, ownership e gerenciamento de jornadas estão implementados. A primeira captura guiada e privada está implementada atrás da configuração operacional do bucket; comparação, rotina e progresso continuam planejados.
+Status: **em implementação por vertical slices**. Identity, ownership, jornadas, captura privada, rotina, check-ins e comparação visual existem no código. O upgrade Pelmorya está em validação local; consulte `docs/ux/PELMORYA_IMPLEMENTATION_STATUS.md` para os bloqueadores, sem assumir prontidão de produção.
 
 Inclui, sujeito a detalhamento e critérios de aceite: autenticação; onboarding; criação de jornada; registro de região; captura guiada; home; rotina; check-in; histórico; comparação visual; progresso; configurações; consentimento e privacidade.
 
@@ -10,4 +10,4 @@ Mesma região ao longo do tempo; fotografia privada; acessibilidade e responsivi
 
 ## Fora do slice atual
 
-IA, rotina, check-in, comparação visual automatizada e notificações. Não há análise de imagem, diagnóstico, score clínico nem envio silencioso a terceiros.
+IA, análise automatizada de imagens, notificações e orientação granular por produto. Não há diagnóstico, score clínico nem envio silencioso de imagens a terceiros. Recuperação de conta por e-mail, exclusão durável/reconciliação e gestão completa de consentimento exigem entregas próprias antes de release amplo.

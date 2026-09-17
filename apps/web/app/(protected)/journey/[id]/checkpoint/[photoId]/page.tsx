@@ -42,28 +42,31 @@ export default async function CheckpointPage({
   const photo = photos[index]!;
   const nextPhotoAt = photo.journey.routinePlan
     ? new Date(
-        photo.capturedAt.getTime() + photo.journey.routinePlan.photoIntervalDays * 86_400_000,
+        photos.at(-1)!.capturedAt.getTime() +
+          photo.journey.routinePlan.photoIntervalDays * 86_400_000,
       )
     : null;
   return (
     <main className="page-shell mx-auto max-w-2xl py-8">
       <Link
         href={`/journey/${id}`}
-        className="inline-flex min-h-11 items-center text-sm font-semibold text-forest"
+        className="inline-flex min-h-11 items-center text-base font-semibold text-accent"
       >
         ← Voltar à trilha
       </Link>
       <header className="pt-7 text-center">
-        <p className="text-[.68rem] font-bold uppercase tracking-[.2em] text-forest">
+        <p className="text-xs font-bold uppercase tracking-[.2em] text-accent">
           Memória {String(index + 1).padStart(2, '0')} · {photo.journey.name}
         </p>
-        <h1 className="mt-3 font-serif text-[clamp(2.8rem,13vw,4.2rem)] leading-[.88] tracking-[-.045em]">
+        <h1 className="mt-3 font-serif text-[clamp(2.8rem,13vw,4.2rem)] leading-tight tracking-[-.045em]">
           Um instante da sua trajetória.
         </h1>
-        <p className="mt-4 text-sm text-graphite/55">
-          {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeStyle: 'short' }).format(
-            photo.capturedAt,
-          )}
+        <p className="mt-4 text-base text-ivory/80">
+          {new Intl.DateTimeFormat('pt-BR', {
+            dateStyle: 'long',
+            timeStyle: 'short',
+            timeZone: 'America/Sao_Paulo',
+          }).format(photo.capturedAt)}
         </p>
       </header>
 
@@ -76,14 +79,14 @@ export default async function CheckpointPage({
           <span>
             Checkpoint {index + 1} de {photos.length}
           </span>
-          <span className="rounded-full bg-ivory/10 px-3 py-1">Privada · protegida</span>
+          <span className="rounded-full bg-surface/10 px-3 py-1">Privada · protegida</span>
         </div>
       </section>
 
       {photos.length > 1 && (
         <Link
-          href={`/journey/${id}/compare`}
-          className="mx-auto mt-5 flex min-h-13 max-w-md items-center justify-center rounded-full bg-forest px-6 text-sm font-bold text-ivory shadow-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+          href={`/journey/${id}/compare?to=${photo.id}`}
+          className="mx-auto mt-5 flex min-h-13 max-w-md items-center justify-center rounded-full bg-forest px-6 text-base font-bold text-ivory shadow-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           Comparar antes e agora{' '}
           <span className="ml-2" aria-hidden="true">
@@ -93,65 +96,68 @@ export default async function CheckpointPage({
       )}
 
       <Surface className="mt-8 overflow-hidden p-6 text-left shadow-soft">
-        <p className="text-xs font-bold uppercase tracking-wider text-forest">
+        <p className="text-xs font-bold uppercase tracking-wider text-accent">
           Leitura do registro
         </p>
         <h2 className="mt-3 font-serif text-3xl leading-none">
           Fotografia pronta para acompanhar o tempo.
         </h2>
-        <p className="mt-4 text-sm leading-6 text-graphite/62">
+        <p className="mt-4 text-base leading-6 text-ivory/80">
           Este registro documenta a aparência visual nesta data. A análise por IA ainda não está
           ativa; nenhuma condição ou resultado foi inferido.
         </p>
-        <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-graphite/10 pt-5 text-sm">
+        <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-ivory/10 pt-5 text-base">
           <Data
-            label="Qualidade"
-            value={photo.qualityStatus === 'ACCEPTED' ? 'Boa captura' : 'Revisar'}
+            label="Arquivo"
+            value={photo.qualityStatus === 'ACCEPTED' ? 'Formato validado' : 'Revisar'}
           />
-          <Data label="Enquadramento" value="Centralizado" />
+          <Data label="Luz e enquadramento" value="Não avaliados" />
           <Data label="Distância" value={photo.distance === 'CLOSE' ? 'Próxima' : 'Média'} />
           <Data label="Formato" value={`${photo.width} × ${photo.height}`} />
         </dl>
       </Surface>
 
       <section className="mt-5 rounded-[2rem] bg-sand/55 p-6">
-        <p className="text-xs font-bold uppercase tracking-wider text-forest">
+        <p className="text-xs font-bold uppercase tracking-wider text-accent">
           Enquanto o tempo passa
         </p>
-        <ul className="mt-4 grid gap-4 text-sm leading-6 text-graphite/65">
+        <ul className="mt-4 grid gap-4 text-base leading-6 text-ivory/80">
           <li className="flex gap-3">
-            <span aria-hidden="true" className="text-forest">
+            <span aria-hidden="true" className="text-accent">
               01
             </span>
             <span>Siga somente o modo de uso presente no rótulo dos produtos.</span>
           </li>
           <li className="flex gap-3">
-            <span aria-hidden="true" className="text-forest">
+            <span aria-hidden="true" className="text-accent">
               02
             </span>
             <span>Mantenha uma rotina suave e evite manipular a região.</span>
           </li>
           <li className="flex gap-3">
-            <span aria-hidden="true" className="text-forest">
+            <span aria-hidden="true" className="text-accent">
               03
             </span>
             <span>Use proteção solar conforme orientação do produto escolhido.</span>
           </li>
         </ul>
-        <p className="mt-5 border-t border-graphite/10 pt-4 text-xs leading-5 text-graphite/48">
+        <p className="mt-5 border-t border-ivory/10 pt-4 text-xs leading-5 text-ivory/80">
           Orientações cosméticas gerais, sem diagnóstico ou prescrição.
         </p>
       </section>
 
-      <section className="mt-5 rounded-[2rem] border border-graphite/10 bg-surface p-6">
-        <p className="text-xs font-bold uppercase tracking-wider text-forest">Próximo marco</p>
+      <section className="mt-5 rounded-[2rem] border border-ivory/10 bg-surface p-6">
+        <p className="text-xs font-bold uppercase tracking-wider text-accent">Próximo marco</p>
         <h2 className="mt-3 font-serif text-3xl">Sua próxima memória</h2>
-        <p className="mt-3 text-sm leading-6 text-graphite/62">
+        <p className="mt-3 text-base leading-6 text-ivory/80">
           {nextPhotoAt ? (
             <>
               Programada pelo seu ciclo para{' '}
               <strong>
-                {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(nextPhotoAt)}
+                {new Intl.DateTimeFormat('pt-BR', {
+                  dateStyle: 'long',
+                  timeZone: 'America/Sao_Paulo',
+                }).format(nextPhotoAt)}
               </strong>
               .
             </>
@@ -159,10 +165,15 @@ export default async function CheckpointPage({
             'Configure seu ciclo para escolher o intervalo entre fotografias.'
           )}
         </p>
+        <Link href={`/journey/${id}#rotina`} className="action-link mt-5 w-full">
+          {photo.journey.routinePlan
+            ? 'Ir para meu cuidado de hoje'
+            : 'Preparar meu ciclo de cuidado'}
+        </Link>
         {index > 0 && (
           <Link
             href={`/journey/${id}/checkpoint/${photos[index - 1]!.id}`}
-            className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-forest"
+            className="mt-4 inline-flex min-h-11 items-center text-base font-semibold text-accent"
           >
             ← Memória anterior
           </Link>
@@ -175,7 +186,7 @@ export default async function CheckpointPage({
 function Data({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs text-graphite/45">{label}</dt>
+      <dt className="text-xs text-ivory/80">{label}</dt>
       <dd className="mt-1 font-semibold">{value}</dd>
     </div>
   );

@@ -1,8 +1,8 @@
-# Produto MEMYRA
+# Produto Pelmorya
 
 ## Visão e problema
 
-“A pele tem memória.” MEMYRA ajuda pessoas a manter um cuidado cosmético consistente e perceber sua trajetória com registros comparáveis. O problema é a dificuldade de aderir à rotina e avaliar mudanças quando fotos, contexto e tempo não são padronizados.
+“A pele tem memória.” Pelmorya (anteriormente MEMYRA) ajuda pessoas a manter um cuidado cosmético consistente e perceber sua trajetória com registros comparáveis. O problema é a dificuldade de aderir à rotina e avaliar mudanças quando fotos, contexto e tempo não são padronizados. A troca de marca foi solicitada em 16/09/2026; não altera os limites cosméticos do produto.
 
 ## Proposta, usuário e princípios
 

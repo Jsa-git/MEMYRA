@@ -9,8 +9,6 @@ async function register(page: Page, email: string) {
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Criar conta' }).click();
   await expect(page).toHaveURL(/\/onboarding$/);
-  for (let step = 0; step < 2; step += 1)
-    await page.getByRole('button', { name: 'Continuar' }).click();
   await page.getByRole('button', { name: 'Começar minha jornada' }).click();
   await expect(page).toHaveURL(/\/journey\/new\?guided=1$/);
   await page.goto('/journey');
@@ -21,24 +19,23 @@ async function login(page: Page, email: string) {
   await page.getByLabel('E-mail').fill(email);
   await page.getByLabel('Senha').fill(password);
   await page.getByRole('button', { name: 'Entrar' }).click();
-  await expect(page).toHaveURL(/\/journey$/);
+  await expect(page).toHaveURL(/\/journey(?:\/[0-9a-f-]+\/start)?$/);
+  await page.goto('/journey');
 }
 
 async function createJourney(page: Page, journeyName: string) {
   await page.getByRole('link', { name: 'Iniciar minha jornada' }).click();
-  await page.getByText('Rosto', { exact: true }).click();
-  await page.getByText('Não se aplica', { exact: true }).click();
+  await page.getByRole('radio', { name: 'Rosto', exact: true }).check();
+  await page.getByRole('radio', { name: 'Não se aplica', exact: true }).check();
   await page.getByRole('button', { name: 'Continuar' }).click();
-  await page.getByText('Outra', { exact: true }).click();
-  await page.getByRole('button', { name: 'Continuar' }).click();
-  await page.getByText('Não sei informar', { exact: true }).click();
-  await page.getByRole('button', { name: 'Continuar' }).click();
-  await page.getByText('Outro objetivo cosmético', { exact: true }).click();
+  await page.getByLabel('Como você descreve essa marca?').selectOption('OTHER');
+  await page.getByLabel('Há quanto tempo você percebe?').selectOption('UNKNOWN');
+  await page.getByLabel('O que você quer acompanhar?').selectOption('OTHER');
   await page.getByRole('button', { name: 'Continuar' }).click();
   await page.getByLabel('Nome da jornada').fill(journeyName);
-  await page.getByRole('button', { name: 'Continuar' }).click();
   await page.getByRole('button', { name: 'Criar jornada' }).click();
-  await expect(page).toHaveURL(/\/journey\/[0-9a-f-]+$/);
+  await expect(page).toHaveURL(/\/journey\/[0-9a-f-]+\/start$/);
+  await page.getByRole('link', { name: 'Fazer depois' }).click();
 }
 
 test('persists an owned journey across login and denies cross-user access', async ({ page }) => {

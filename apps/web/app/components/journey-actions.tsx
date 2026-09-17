@@ -30,22 +30,39 @@ export function JourneyActions({ id, status }: { id: string; status: JourneyStat
 
   return (
     <section className="mt-8" aria-labelledby="manage-journey">
-      <h2 id="manage-journey" className="font-serif text-2xl">Gerenciar jornada</h2>
+      <h2 id="manage-journey" className="font-serif text-2xl">
+        Gerenciar jornada
+      </h2>
       <div className="mt-4 flex flex-wrap gap-3">
-        <Link className="inline-flex min-h-11 items-center rounded-full border border-graphite/15 px-5 text-sm font-semibold text-forest" href={`/journey/${id}/edit`}>
+        <Link
+          className="inline-flex min-h-11 items-center rounded-full border border-ivory/15 px-5 text-base font-semibold text-accent"
+          href={`/journey/${id}/edit`}
+        >
           Editar informações
         </Link>
         {status === 'ACTIVE' ? (
-          <button disabled={pending} className="min-h-11 rounded-full border border-graphite/15 px-5 text-sm font-semibold" onClick={() => void changeStatus('ARCHIVED')}>
+          <button
+            disabled={pending}
+            className="min-h-11 rounded-full border border-ivory/15 px-5 text-base font-semibold"
+            onClick={() => void changeStatus('ARCHIVED')}
+          >
             Arquivar jornada
           </button>
         ) : (
-          <button disabled={pending} className="min-h-11 rounded-full bg-forest px-5 text-sm font-semibold text-ivory" onClick={() => void changeStatus('ACTIVE')}>
+          <button
+            disabled={pending}
+            className="min-h-11 rounded-full bg-forest px-5 text-base font-semibold text-ivory"
+            onClick={() => void changeStatus('ACTIVE')}
+          >
             Reativar jornada
           </button>
         )}
       </div>
-      {error && <p role="alert" className="mt-3 text-sm text-clay">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-3 text-base text-clay">
+          {error}
+        </p>
+      )}
     </section>
   );
 }

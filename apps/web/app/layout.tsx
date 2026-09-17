@@ -11,11 +11,11 @@ const serif = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: { default: 'MEMYRA', template: '%s · MEMYRA' },
+  title: { default: 'Pelmorya', template: '%s · Pelmorya' },
   description: 'Sua jornada de cuidado, registrada com consistência.',
 };
 
-export const viewport: Viewport = { themeColor: '#f8f4ea' };
+export const viewport: Viewport = { themeColor: '#2B1833', viewportFit: 'cover' };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (

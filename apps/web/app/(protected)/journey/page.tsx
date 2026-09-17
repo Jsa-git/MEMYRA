@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { listJourneys } from '@memyra/application';
+import { trackingDate } from '@memyra/domain';
 import { headers } from 'next/headers';
 
 import { PageIntro } from '../../components/app-shell';
@@ -29,11 +30,12 @@ export default async function JourneyPage() {
           routinePlan: {
             select: {
               durationDays: true,
+              createdAt: true,
               photoIntervalDays: true,
               periods: true,
               checkIns: {
-                where: { completed: true, localDate: { gte: recentDate } },
-                select: { id: true },
+                where: { completed: true, localDate: { gte: recentDate, lte: trackingDate(now) } },
+                select: { id: true, localDate: true, period: true },
               },
             },
           },
@@ -50,6 +52,15 @@ export default async function JourneyPage() {
           periodsPerDay: item.routinePlan?.periods.length ?? 0,
           recentCompleted: item.routinePlan?.checkIns.length ?? 0,
           photoCount: item._count.photos,
+          planCreatedAt: item.routinePlan?.createdAt ?? null,
+          todayComplete: Boolean(
+            item.routinePlan &&
+              item.routinePlan.periods.every((period) =>
+                item.routinePlan!.checkIns.some(
+                  (checkIn) => checkIn.localDate === trackingDate(now) && checkIn.period === period,
+                ),
+              ),
+          ),
           nextPhotoAt:
             lastPhoto && item.routinePlan
               ? new Date(lastPhoto.getTime() + item.routinePlan.photoIntervalDays * 86_400_000)
@@ -72,7 +83,7 @@ export default async function JourneyPage() {
       {journeys.length === 1 && (
         <Link
           href="/journey/new"
-          className="mt-9 inline-flex min-h-12 items-center justify-center rounded-full border border-graphite/15 bg-surface px-6 text-sm font-semibold text-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+          className="mt-9 inline-flex min-h-12 items-center justify-center rounded-full border border-ivory/15 bg-surface px-6 text-base font-semibold text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           Criar outra jornada
         </Link>

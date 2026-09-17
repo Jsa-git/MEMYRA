@@ -12,13 +12,14 @@ export default async function SettingsPage() {
   const actor = await requireCurrentActor(await headers());
   const consents = await getDatabase().consentRecord.findMany({
     where: { userId: actor.userId, accepted: true, revokedAt: null },
-    distinct: ['type'], orderBy: { createdAt: 'desc' },
+    distinct: ['type'],
+    orderBy: { createdAt: 'desc' },
     select: { type: true, version: true, acceptedAt: true },
   });
   return (
     <main className="page-shell">
       <PageIntro eyebrow="Preferências" title="Você controla sua experiência.">
-        <p>Conta, consentimentos, notificações e dados pessoais serão gerenciados nesta área.</p>
+        <p>Consulte suas autorizações e controle os registros da sua conta.</p>
       </PageIntro>
       <AccountSettings consents={consents} />
     </main>

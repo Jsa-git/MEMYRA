@@ -1,4 +1,8 @@
-# Harness Status — 2026-09-03
+# Harness Status — base 2026-09-03, revisão Pelmorya 2026-09-16
+
+## Estado atual do upgrade
+
+**PARTIAL / NO-GO para publicação.** A matriz abaixo registra a fundação histórica, não a prontidão atual do aplicativo. Captura, storage, rotina e comparação já existem no código; a matriz de implementação vigente, testes e bloqueadores está em [Pelmorya Implementation Status](ux/PELMORYA_IMPLEMENTATION_STATUS.md). Em particular, design system, consentimento, checkout e qualidade de release não devem ser considerados totalmente prontos enquanto houver pendências nessa matriz.
 
 Legenda: **READY** verificável agora; **PARTIAL** fundação pronta, depende da V1/fornecedor; **TODO** não iniciado intencionalmente.
 

@@ -42,7 +42,9 @@ export default tseslint.config(
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parserOptions: {
-        projectService: { allowDefaultProject: ['playwright.config.ts'] },
+        projectService: {
+          allowDefaultProject: ['playwright.config.ts', 'playwright.public.config.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },

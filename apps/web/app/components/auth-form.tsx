@@ -13,6 +13,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const isRegister = mode === 'register';
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   async function submit(formData: FormData) {
     setPending(true);
@@ -24,7 +25,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
     try {
       const result = isRegister
-        ? await authClient.signUp.email({ email, password, name: 'Pessoa MEMYRA' })
+        ? await authClient.signUp.email({ email, password, name: 'Pessoa Pelmorya' })
         : await authClient.signIn.email({ email, password });
 
       if (result.error) {
@@ -37,13 +38,20 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       }
 
       if (isRegister) {
-        const consentResponse = await fetch('/api/consents', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ types: ['TERMS', 'PRIVACY'], version: '2026-09-08' }),
-        });
-        if (!consentResponse.ok) {
-          setError('Sua conta foi criada, mas não foi possível registrar os consentimentos. Entre novamente para continuar.');
+        try {
+          const consentResponse = await fetch('/api/consents', {
+            method: 'POST',
+            signal: AbortSignal.timeout(15_000),
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ types: ['TERMS', 'PRIVACY'], version: '2026-09-08' }),
+          });
+          if (!consentResponse.ok) {
+            router.replace('/consent');
+            return;
+          }
+        } catch {
+          router.replace('/consent');
+          router.refresh();
           return;
         }
       }
@@ -51,8 +59,36 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       let destination = '/journey';
       if (isRegister) destination = '/onboarding';
       else {
-        const profile = await fetch('/api/me').then((response) => response.ok ? response.json() as Promise<{ onboardingCompleted: boolean }> : null);
-        if (profile && !profile.onboardingCompleted) destination = '/onboarding';
+        const consent = await fetch('/api/consents', {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!consent.ok) {
+          setError('Não foi possível verificar suas preferências. Tente entrar novamente.');
+          return;
+        }
+        const { records } = (await consent.json()) as {
+          records: { type: string; accepted: boolean; revokedAt: string | null }[];
+        };
+        if (
+          !['TERMS', 'PRIVACY'].every((type) =>
+            records.some((record) => record.type === type && record.accepted && !record.revokedAt),
+          )
+        ) {
+          router.replace('/consent');
+          return;
+        }
+        const profile = await fetch('/api/me', { signal: AbortSignal.timeout(15_000) }).then(
+          (response) =>
+            response.ok
+              ? (response.json() as Promise<{ onboardingCompleted: boolean; resumePath: string }>)
+              : null,
+        );
+        if (!profile) {
+          setError('Não foi possível retomar sua jornada. Tente novamente.');
+          return;
+        }
+        destination = profile.resumePath;
       }
       router.replace(destination);
       router.refresh();
@@ -66,8 +102,10 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   return (
     <section className="w-full">
       <Eyebrow>{isRegister ? 'Sua trajetória começa aqui' : 'Continue sua trajetória'}</Eyebrow>
-      <h1 className="title-display mt-4">{isRegister ? 'Crie sua conta.' : 'Entre na MEMYRA.'}</h1>
-      <p className="mt-5 text-sm leading-6 text-graphite/62">
+      <h1 className="title-display mt-4">
+        {isRegister ? 'Crie sua conta.' : 'Entre na Pelmorya.'}
+      </h1>
+      <p className="mt-5 text-base leading-6 text-ivory/80">
         {isRegister
           ? 'Use seu e-mail para manter suas jornadas acessíveis com segurança.'
           : 'Suas jornadas permanecem vinculadas à sua conta.'}
@@ -75,7 +113,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
       <form action={submit} className="mt-9 grid gap-5">
         <div>
-          <label className="text-sm font-semibold" htmlFor="email">
+          <label className="text-base font-semibold" htmlFor="email">
             E-mail
           </label>
           <input
@@ -85,37 +123,56 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
             inputMode="email"
             autoComplete="email"
             required
-            className="mt-2 min-h-12 w-full rounded-2xl border border-graphite/20 bg-surface px-4 text-base outline-none focus:border-forest focus:ring-2 focus:ring-forest/20"
+            className="mt-2 min-h-12 w-full rounded-2xl border border-ivory/20 bg-surface px-4 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent"
           />
         </div>
 
         {isRegister && (
-          <label className="flex items-start gap-3 text-sm leading-5 text-graphite/70">
-            <input type="checkbox" name="consent" required className="mt-1 size-4 accent-forest" />
-            <span>Li e aceito os Termos de Uso e a Política de Privacidade da MEMYRA.</span>
+          <label className="flex items-start gap-3 text-base leading-5 text-ivory/70">
+            <input type="checkbox" name="consent" required className="mt-1 size-4 accent-accent" />
+            <span>
+              Li os{' '}
+              <Link href="/terms" target="_blank" rel="noreferrer" className="underline">
+                Termos de Uso
+              </Link>{' '}
+              e a{' '}
+              <Link href="/privacy" target="_blank" rel="noreferrer" className="underline">
+                Política de Privacidade
+              </Link>{' '}
+              da Pelmorya e aceito continuar.
+            </span>
           </label>
         )}
         <div>
-          <label className="text-sm font-semibold" htmlFor="password">
+          <label className="text-base font-semibold" htmlFor="password">
             Senha
           </label>
           <input
             id="password"
             name="password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             autoComplete={isRegister ? 'new-password' : 'current-password'}
             required
             minLength={8}
-            className="mt-2 min-h-12 w-full rounded-2xl border border-graphite/20 bg-surface px-4 text-base outline-none focus:border-forest focus:ring-2 focus:ring-forest/20"
+            className="mt-2 min-h-12 w-full rounded-2xl border border-ivory/20 bg-surface px-4 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent"
           />
+          <button
+            type="button"
+            aria-controls="password"
+            aria-pressed={showPassword}
+            onClick={() => setShowPassword((value) => !value)}
+            className="mt-2 min-h-11 rounded-lg px-1 text-sm font-semibold text-accent"
+          >
+            {showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+          </button>
           {isRegister && (
-            <p className="mt-2 text-xs leading-5 text-graphite/55">Use pelo menos 8 caracteres.</p>
+            <p className="mt-2 text-xs leading-5 text-ivory/80">Use pelo menos 8 caracteres.</p>
           )}
         </div>
 
         {error && (
           <p
-            className="rounded-xl bg-clay/10 px-4 py-3 text-sm font-medium text-clay"
+            className="rounded-xl bg-clay/10 px-4 py-3 text-base font-medium text-clay"
             role="alert"
             aria-live="polite"
           >
@@ -128,11 +185,11 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         </Button>
       </form>
 
-      <p className="mt-7 text-center text-sm text-graphite/62">
+      <p className="mt-7 text-center text-base text-ivory/80">
         {isRegister ? 'Já tem uma conta?' : 'Ainda não tem uma conta?'}{' '}
         <Link
           href={isRegister ? '/login' : '/register'}
-          className="font-semibold text-forest underline decoration-forest/30 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+          className="font-semibold text-accent underline decoration-forest/30 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {isRegister ? 'Entrar' : 'Criar conta'}
         </Link>

@@ -12,7 +12,20 @@ export const dynamic = 'force-dynamic';
 
 export default async function EditJourneyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const journey = await getJourney(await requireCurrentActor(await headers()), id, getJourneyServices().repository);
+  const journey = await getJourney(
+    await requireCurrentActor(await headers()),
+    id,
+    getJourneyServices().repository,
+  );
   if (!journey) notFound();
-  return <main className="page-shell py-8"><Link href={`/journey/${id}`} className="text-sm font-semibold text-forest">← Voltar</Link><h1 className="title-display mt-8">Editar jornada.</h1><p className="mt-3 text-sm text-graphite/60">Atualize apenas o que mudou na sua percepção.</p><JourneyEditForm journey={journey} /></main>;
+  return (
+    <main className="page-shell py-8">
+      <Link href={`/journey/${id}`} className="text-base font-semibold text-accent">
+        ← Voltar
+      </Link>
+      <h1 className="title-display mt-8">Editar jornada.</h1>
+      <p className="mt-3 text-base text-ivory/80">Atualize apenas o que mudou na sua percepção.</p>
+      <JourneyEditForm journey={journey} />
+    </main>
+  );
 }

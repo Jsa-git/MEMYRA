@@ -1,8 +1,8 @@
-# Instruções para agentes — MEMYRA
+# Instruções para agentes — Pelmorya
 
 ## Missão e limites
 
-MEMYRA é uma marca premium de cosméticos. O software apoia adesão, consistência, registro e percepção de evolução por rotina, fotografia padronizada e linha do tempo. Ele não é produto médico.
+Pelmorya (anteriormente MEMYRA) é uma marca premium de cosméticos. O software apoia adesão, consistência, registro e percepção de evolução por rotina, fotografia padronizada e linha do tempo. Ele não é produto médico. Identificadores técnicos `@memyra/*` permanecem por compatibilidade. Antes de continuar o upgrade, leia `docs/ux/PELMORYA_IMPLEMENTATION_STATUS.md` para distinguir alterações locais de itens ainda bloqueados para release.
 
 **Nunca invente requisitos médicos ou claims do produto.**
 

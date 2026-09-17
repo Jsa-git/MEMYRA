@@ -6,5 +6,5 @@
     "composite": false,
     "types": ["vitest/globals"]
   },
-  "include": ["**/*.ts", "../playwright.config.ts"]
+  "include": ["**/*.ts", "../playwright.config.ts", "../playwright.public.config.ts"]
 }

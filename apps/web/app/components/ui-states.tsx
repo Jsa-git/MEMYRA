@@ -23,18 +23,18 @@ export function EmptyJourneys() {
   return (
     <Surface className="border-dashed px-6 py-10 text-center sm:px-10">
       <span
-        className="mx-auto flex size-12 items-center justify-center rounded-full bg-sand text-xl text-forest"
+        className="mx-auto flex size-12 items-center justify-center rounded-full bg-sand text-xl text-accent"
         aria-hidden="true"
       >
         ＋
       </span>
       <h2 className="mt-5 font-serif text-3xl">Sua jornada começa com um primeiro registro.</h2>
-      <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-graphite/62">
+      <p className="mx-auto mt-3 max-w-sm text-base leading-6 text-ivory/80">
         A pele tem memória. Escolha uma região para acompanhar sua trajetória com consistência.
       </p>
       <Link
         href="/journey/new"
-        className="mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-forest px-6 text-sm font-semibold text-ivory shadow-soft transition-colors hover:bg-forest-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+        className="mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-forest px-6 text-base font-semibold text-ivory shadow-soft transition-colors hover:bg-forest-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         Iniciar minha jornada
       </Link>
@@ -58,20 +58,20 @@ export function RouteErrorState({
           Algo interrompeu o caminho
         </p>
         <h1 className="mt-4 font-serif text-4xl leading-tight">{title}</h1>
-        <p className="mt-4 max-w-md text-sm leading-6 text-graphite/65">{description}</p>
+        <p className="mt-4 max-w-md text-base leading-6 text-ivory/80">{description}</p>
         <div className="mt-7 flex flex-wrap gap-3">
           {onRetry && (
             <button
               type="button"
               onClick={onRetry}
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-forest px-6 text-sm font-semibold text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-forest px-6 text-base font-semibold text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               Tentar novamente
             </button>
           )}
           <Link
             href="/journey"
-            className="inline-flex min-h-12 items-center justify-center rounded-full border border-graphite/15 bg-surface px-6 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+            className="inline-flex min-h-12 items-center justify-center rounded-full border border-ivory/15 bg-surface px-6 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             Voltar às jornadas
           </Link>

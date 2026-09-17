@@ -10,3 +10,6 @@ dist/
 .DS_Store
 work/
 outputs/
+test-results/
+playwright-report/
+.pnpm-store/

@@ -12,7 +12,7 @@ function requiredEnvironment(name: 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL'): st
 function createAuth() {
   const baseURL = requiredEnvironment('BETTER_AUTH_URL');
   return betterAuth({
-    appName: 'MEMYRA',
+    appName: 'Pelmorya',
     baseURL,
     secret: requiredEnvironment('BETTER_AUTH_SECRET'),
     database: prismaAdapter(getDatabase(), {

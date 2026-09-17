@@ -15,7 +15,7 @@ export async function GET(): Promise<Response> {
       orderBy: { createdAt: 'desc' },
       select: { type: true, version: true, accepted: true, acceptedAt: true, revokedAt: true },
     });
-    return NextResponse.json({ records });
+    return NextResponse.json({ records }, { headers: { 'cache-control': 'private, no-store' } });
   } catch (error) {
     if (error instanceof Error && error.message === 'AUTHENTICATION_REQUIRED')
       return NextResponse.json({ code: 'AUTHENTICATION_REQUIRED' }, { status: 401 });
@@ -27,13 +27,17 @@ export async function POST(request: Request): Promise<Response> {
   try {
     const actor = await requireCurrentActor(await headers());
     const input = recordConsentsInputSchema.safeParse(await request.json());
-    if (!input.success)
-      return NextResponse.json({ code: 'VALIDATION_ERROR' }, { status: 400 });
+    if (!input.success) return NextResponse.json({ code: 'VALIDATION_ERROR' }, { status: 400 });
     const now = new Date();
     await getDatabase().consentRecord.createMany({
       data: [...new Set(input.data.types)].map((type) => ({
-        id: randomUUID(), userId: actor.userId, type, version: input.data.version,
-        accepted: true, acceptedAt: now, createdAt: now,
+        id: randomUUID(),
+        userId: actor.userId,
+        type,
+        version: input.data.version,
+        accepted: true,
+        acceptedAt: now,
+        createdAt: now,
       })),
       skipDuplicates: true,
     });

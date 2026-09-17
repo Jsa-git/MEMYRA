@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const navigation = [
   { href: '/journey', label: 'Hoje', icon: 'home' },
-  { href: '/journey/new', label: 'Nova jornada', icon: 'plus' },
+  { href: '/journey/new', label: 'Criar', icon: 'plus' },
   { href: '/settings', label: 'Ajustes', icon: 'settings' },
 ] as const;
 
@@ -14,18 +14,22 @@ export function PrimaryNavigation() {
 
   return (
     <nav
-      className="fixed inset-x-3 bottom-3 z-20 mx-auto max-w-md rounded-[1.4rem] border border-graphite/10 bg-surface/92 px-2 pb-[max(.4rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_12px_45px_rgb(36_38_34/14%)] backdrop-blur-xl"
+      className="fixed inset-x-3 bottom-3 z-20 mx-auto max-w-md rounded-[1.4rem] border border-ivory/10 bg-surface/92 px-2 pb-[max(.4rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_12px_45px_rgb(36_38_34/14%)] backdrop-blur-xl"
       aria-label="Navegação principal"
     >
       <ul className="grid grid-cols-3">
         {navigation.map((item) => {
-          const current = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const current =
+            item.href === '/journey'
+              ? pathname === '/journey' ||
+                (pathname.startsWith('/journey/') && pathname !== '/journey/new')
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
             <li key={item.href}>
               <Link
                 href={item.href}
                 aria-current={current ? 'page' : undefined}
-                className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl text-[0.68rem] font-medium transition-colors hover:bg-sand/40 hover:text-forest focus-visible:outline-2 focus-visible:outline-forest ${current ? 'bg-sand/45 text-forest' : 'text-graphite/65'}`}
+                className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-medium transition-colors hover:bg-sand/40 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent ${current ? 'bg-sand/45 text-accent' : 'text-ivory/80'}`}
               >
                 <NavIcon name={item.icon} />
                 {item.label}

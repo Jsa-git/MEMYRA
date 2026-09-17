@@ -14,6 +14,7 @@
     "typecheck": "tsc -b --pretty false && tsc -p tests/tsconfig.json --noEmit --pretty false",
     "test": "vitest run --exclude tests/e2e/** --exclude work/**",
     "test:e2e": "playwright test",
+    "test:e2e:public": "playwright test --config playwright.public.config.ts",
     "build": "pnpm --filter @memyra/web build",
     "db:generate": "pnpm --filter @memyra/database db:generate",
     "db:validate": "pnpm --filter @memyra/database exec prisma validate",

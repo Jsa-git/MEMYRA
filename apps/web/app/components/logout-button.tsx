@@ -31,7 +31,7 @@ export function LogoutButton() {
         type="button"
         disabled={pending}
         onClick={() => void logout()}
-        className="min-h-11 rounded-full px-3 text-xs font-semibold text-graphite/60 hover:text-forest focus-visible:outline-2 focus-visible:outline-forest disabled:opacity-50"
+        className="min-h-11 rounded-full px-3 text-xs font-semibold text-ivory/80 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50"
       >
         {pending ? 'Saindo…' : 'Sair'}
       </button>

@@ -7,7 +7,7 @@ export const photoMetadataSchema = z.strictObject({
   width: z.coerce.number().int().min(320).max(12000),
   height: z.coerce.number().int().min(320).max(12000),
   orientation: z.enum(PHOTO_ORIENTATIONS),
-  framing: z.literal('CENTERED'),
+  framing: z.enum(['CENTERED', 'NOT_ASSESSED']),
   distance: z.enum(['CLOSE', 'MEDIUM']),
-  lighting: z.literal('EVEN'),
+  lighting: z.enum(['EVEN', 'NOT_ASSESSED']),
 });

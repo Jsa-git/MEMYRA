@@ -5,12 +5,18 @@ import { requireCurrentActor } from '../../../../src/server/current-actor';
 import { getDatabase } from '../../../../src/server/database';
 import { deletePrivatePhoto } from '../../../../src/server/photo-storage';
 
-export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+): Promise<Response> {
   try {
     const actor = await requireCurrentActor(await headers());
     const id = journeyIdSchema.safeParse((await params).id);
     if (!id.success) return NextResponse.json({ code: 'VALIDATION_ERROR' }, { status: 400 });
-    const photo = await getDatabase().photoRecord.findFirst({ where: { id: id.data, journey: { userId: actor.userId } }, select: { id: true, storageKey: true } });
+    const photo = await getDatabase().photoRecord.findFirst({
+      where: { id: id.data, journey: { userId: actor.userId } },
+      select: { id: true, storageKey: true },
+    });
     if (!photo) return NextResponse.json({ code: 'NOT_FOUND' }, { status: 404 });
     await deletePrivatePhoto(photo.storageKey);
     await getDatabase().photoRecord.delete({ where: { id: photo.id } });

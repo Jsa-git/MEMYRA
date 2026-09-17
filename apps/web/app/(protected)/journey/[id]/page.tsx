@@ -1,4 +1,5 @@
 import { getJourney } from '@memyra/application';
+import { trackingDay } from '@memyra/domain';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { headers } from 'next/headers';
@@ -70,10 +71,7 @@ export default async function JourneyDetailPage({
       getJourneyServices().repository,
     );
     if (!journey) notFound();
-    const day = Math.max(
-      1,
-      Math.floor((Date.now() - journey.startedAt.getTime()) / 86_400_000) + 1,
-    );
+    const day = trackingDay(journey.startedAt, new Date());
     const prisma = getDatabase();
     const [photos, photoConsent, routinePlan] = await Promise.all([
       prisma.photoRecord.findMany({
@@ -94,6 +92,7 @@ export default async function JourneyDetailPage({
         where: { journeyId: journey.id },
         select: {
           durationDays: true,
+          createdAt: true,
           photoIntervalDays: true,
           periods: true,
           checkIns: {
@@ -108,44 +107,54 @@ export default async function JourneyDetailPage({
       <main className="page-shell">
         <Link
           href="/journey"
-          className="inline-flex min-h-11 items-center pt-5 text-sm font-semibold text-forest focus-visible:outline-2 focus-visible:outline-forest"
+          className="inline-flex min-h-11 items-center pt-5 text-base font-semibold text-accent focus-visible:outline-2 focus-visible:outline-accent"
         >
           ← Suas jornadas
         </Link>
         <div className="pt-7 text-center">
-          <p className="text-[0.68rem] font-bold uppercase tracking-[.22em] text-forest">
+          <p className="text-xs font-bold uppercase tracking-[.22em] text-accent">
             Jornada REEDUCA · Dia {day}
           </p>
-          <h1 className="mt-3 font-serif text-[clamp(2.8rem,13vw,4.4rem)] leading-[.88] tracking-[-.045em]">
+          <h1 className="mt-3 font-serif text-[clamp(2.8rem,13vw,4.4rem)] leading-tight tracking-[-.045em]">
             {journey.name}
           </h1>
-          <p className="mt-4 text-sm text-graphite/58">
+          <p className="mt-4 text-base text-ivory/80">
             {skinAreaLabels[journey.skinArea.region]} · {sideLabels[journey.skinArea.side]}
           </p>
         </div>
-        <JourneyPath journeyId={journey.id} day={day} plan={routinePlan} photos={photos} />
-        <details className="mx-auto mt-7 max-w-xl rounded-2xl border border-graphite/10 bg-surface/65 px-5 py-4">
-          <summary className="cursor-pointer text-sm font-semibold text-forest">
+        <JourneyPath
+          journeyId={journey.id}
+          day={day}
+          plan={routinePlan}
+          photos={photos}
+          active={journey.status === 'ACTIVE'}
+        />
+        <details className="mx-auto mt-7 max-w-xl rounded-2xl border border-ivory/10 bg-surface/65 px-5 py-4">
+          <summary className="cursor-pointer text-base font-semibold text-accent">
             Contexto desta jornada
           </summary>
-          <p className="mt-3 text-sm leading-6 text-graphite/62">
+          <p className="mt-3 text-base leading-6 text-ivory/80">
             Contexto informado: {contextLabels[journey.context]}. Este registro organiza sua
             percepção cosmética e não representa diagnóstico.
           </p>
-          <dl className="mt-4 grid gap-3 border-t border-graphite/10 pt-4 text-sm">
+          <dl className="mt-4 grid gap-3 border-t border-ivory/10 pt-4 text-base">
             <div className="flex justify-between gap-4">
-              <dt className="text-graphite/55">Tempo percebido</dt>
+              <dt className="text-ivory/80">Tempo percebido</dt>
               <dd className="text-right font-semibold">{ageLabels[journey.approximateAge]}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-graphite/55">Objetivo</dt>
+              <dt className="text-ivory/80">Objetivo</dt>
               <dd className="text-right font-semibold">{goalLabels[journey.goal]}</dd>
             </div>
           </dl>
         </details>
         <JourneyActions id={journey.id} status={journey.status} />
         <div id="rotina" className="scroll-mt-8">
-          <RoutinePanel journeyId={journey.id} plan={routinePlan} />
+          <RoutinePanel
+            journeyId={journey.id}
+            plan={routinePlan}
+            canEdit={journey.status === 'ACTIVE'}
+          />
         </div>
         <div id="fotografia" className="scroll-mt-8">
           <PhotoJournal
@@ -162,7 +171,7 @@ export default async function JourneyDetailPage({
       return (
         <main className="page-shell">
           <h1 className="title-display pt-12">Ambiente indisponível.</h1>
-          <p className="mt-5 max-w-md leading-7 text-graphite/65">
+          <p className="mt-5 max-w-md leading-7 text-ivory/80">
             Não foi possível consultar suas jornadas agora. Tente novamente mais tarde.
           </p>
         </main>

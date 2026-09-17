@@ -4,7 +4,11 @@ import { z } from 'zod';
 export const routinePlanInputSchema = z.strictObject({
   durationDays: z.union(TRACKING_DURATIONS.map((value) => z.literal(value))),
   photoIntervalDays: z.union(PHOTO_INTERVALS.map((value) => z.literal(value))),
-  periods: z.array(z.enum(ROUTINE_PERIODS)).min(1).max(2),
+  periods: z
+    .array(z.enum(ROUTINE_PERIODS))
+    .min(1)
+    .max(2)
+    .refine((periods) => new Set(periods).size === periods.length, 'Escolha momentos diferentes.'),
 });
 
 export const routineCheckInInputSchema = z.strictObject({

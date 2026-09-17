@@ -12,9 +12,9 @@ export function AppShell({ children }: Readonly<{ children: ReactNode }>) {
       >
         <Link
           href="/journey"
-          className="rounded-sm font-serif text-xl tracking-[0.18em] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
+          className="rounded-sm font-serif text-xl tracking-[0.18em] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
         >
-          MEMYRA
+          Pelmorya
         </Link>
         <LogoutButton />
       </header>
@@ -31,11 +31,9 @@ export function PageIntro({
 }: Readonly<{ eyebrow: string; title: string; children: ReactNode }>) {
   return (
     <div className="mb-9 pt-8">
-      <p className="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.19em] text-forest">
-        {eyebrow}
-      </p>
+      <p className="mb-3 text-xs font-bold uppercase tracking-[0.19em] text-accent">{eyebrow}</p>
       <h1 className="title-display max-w-xl">{title}</h1>
-      <div className="mt-5 max-w-lg text-[0.95rem] leading-7 text-graphite/68">{children}</div>
+      <div className="mt-5 max-w-lg text-xs leading-7 text-ivory/80">{children}</div>
     </div>
   );
 }

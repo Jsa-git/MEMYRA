@@ -28,334 +28,459 @@ export function PhotoJournal({
   firstCapture?: boolean;
 }) {
   const router = useRouter();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const busyRef = useRef(false);
+  const video = useRef<HTMLVideoElement>(null);
+  const stream = useRef<MediaStream | null>(null);
+  const busy = useRef(false);
+  const cameraRequest = useRef(0);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [opening, setOpening] = useState(false);
+  const [facing, setFacing] = useState<'environment' | 'user'>('environment');
   const [captured, setCaptured] = useState<File | null>(null);
-  const [previewURL, setPreviewURL] = useState('');
+  const [capturedAt, setCapturedAt] = useState('');
+  const [imported, setImported] = useState(false);
+  const [preview, setPreview] = useState('');
   const [uploadId, setUploadId] = useState(() => crypto.randomUUID());
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => () => stopCamera(streamRef.current), []);
+  function closeCamera() {
+    cameraRequest.current += 1;
+    stream.current?.getTracks().forEach((track) => track.stop());
+    stream.current = null;
+    setCameraOpen(false);
+    setOpening(false);
+  }
+
+  useEffect(() => {
+    const stop = () => {
+      cameraRequest.current += 1;
+      stream.current?.getTracks().forEach((track) => track.stop());
+      stream.current = null;
+    };
+    const hide = () => {
+      if (document.hidden) {
+        stop();
+        setCameraOpen(false);
+        setOpening(false);
+      }
+    };
+    document.addEventListener('visibilitychange', hide);
+    return () => {
+      stop();
+      document.removeEventListener('visibilitychange', hide);
+    };
+  }, []);
   useEffect(
     () => () => {
-      if (previewURL) URL.revokeObjectURL(previewURL);
+      if (preview) URL.revokeObjectURL(preview);
     },
-    [previewURL],
+    [preview],
   );
+  useEffect(() => {
+    if (cameraOpen && video.current && stream.current) {
+      video.current.srcObject = stream.current;
+      void video.current
+        .play()
+        .catch(() => setError('Use Ativar prévia da câmera para tentar novamente.'));
+    }
+  }, [cameraOpen, facing]);
 
-  async function startCamera() {
+  async function startCamera(nextFacing = facing) {
+    if (opening || busy.current) return;
+    closeCamera();
+    const request = ++cameraRequest.current;
+    setOpening(true);
     setError('');
-    if (!navigator.mediaDevices?.getUserMedia)
-      return setError('A câmera não está disponível neste navegador. Use a opção de arquivo.');
+    setFacing(nextFacing);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error('unavailable');
+      const next = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: 'environment' },
+          facingMode: { ideal: nextFacing },
           width: { ideal: 1080 },
           height: { ideal: 1440 },
         },
         audio: false,
       });
-      streamRef.current = stream;
+      if (request !== cameraRequest.current) {
+        next.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      stream.current = next;
       setCameraOpen(true);
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          void videoRef.current.play();
-        }
-      });
     } catch {
-      setError('Não foi possível abrir a câmera. Autorize o acesso ou use a opção de arquivo.');
+      if (request === cameraRequest.current)
+        setError(
+          'Não foi possível abrir a câmera. Confira a permissão nas configurações do navegador ou selecione um arquivo.',
+        );
+    } finally {
+      if (request === cameraRequest.current) setOpening(false);
     }
   }
 
-  function takePhoto() {
-    const video = videoRef.current;
-    if (!video?.videoWidth || !video.videoHeight)
-      return setError('A câmera ainda está preparando a imagem.');
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d')?.drawImage(video, 0, 0);
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) return setError('Não foi possível capturar a fotografia.');
-        const file = new File([blob], 'captura-memyra.jpg', {
-          type: 'image/jpeg',
-          lastModified: Date.now(),
-        });
-        if (previewURL) URL.revokeObjectURL(previewURL);
-        setCaptured(file);
-        setPreviewURL(URL.createObjectURL(file));
-        setUploadId(crypto.randomUUID());
-        stopCamera(streamRef.current);
-        streamRef.current = null;
-        setCameraOpen(false);
-      },
-      'image/jpeg',
-      0.92,
-    );
-  }
-
-  function chooseFile(file?: File) {
-    if (!file) return;
-    if (previewURL) URL.revokeObjectURL(previewURL);
-    setCaptured(file);
-    setPreviewURL(URL.createObjectURL(file));
-    setUploadId(crypto.randomUUID());
+  async function preparePhoto(file: File, fromCamera: boolean) {
+    if (busy.current) return;
+    busy.current = true;
+    setPending(true);
     setError('');
+    try {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 20_000_000)
+        throw new Error('Formato não aceito. Use JPEG, PNG ou WebP de até 20 MB.');
+      const bitmap = await createImageBitmap(file);
+      try {
+        if (
+          Math.min(bitmap.width, bitmap.height) < 320 ||
+          bitmap.width * bitmap.height > 40_000_000
+        )
+          throw new Error(
+            'Escolha uma imagem nítida com pelo menos 320 pixels por lado e até 40 megapixels.',
+          );
+        const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(bitmap.width * scale);
+        canvas.height = Math.round(bitmap.height * scale);
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('Não foi possível preparar a imagem neste navegador.');
+        context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, 'image/jpeg', 0.9),
+        );
+        if (!blob || blob.size > 4_000_000)
+          throw new Error('A imagem ainda está muito grande. Faça uma nova captura.');
+        setCaptured(new File([blob], 'captura-pelmorya.jpg', { type: 'image/jpeg' }));
+        setPreview(URL.createObjectURL(blob));
+        setUploadId(crypto.randomUUID());
+        setImported(!fromCamera);
+        setCapturedAt(fromCamera ? new Date().toISOString() : '');
+      } finally {
+        bitmap.close();
+      }
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Não foi possível preparar a fotografia.');
+    } finally {
+      busy.current = false;
+      setPending(false);
+    }
   }
 
-  async function submit(formData: FormData) {
-    if (busyRef.current) return;
-    if (!captured) return setError('Tire uma fotografia antes de enviar.');
-    busyRef.current = true;
+  async function takePhoto() {
+    if (busy.current) return;
+    const frame = video.current;
+    if (!frame?.videoWidth || !frame.videoHeight)
+      return setError('Aguarde a câmera preparar a imagem.');
+    busy.current = true;
+    setPending(true);
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = frame.videoWidth;
+      canvas.height = frame.videoHeight;
+      canvas.getContext('2d')?.drawImage(frame, 0, 0);
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, 'image/jpeg', 0.95),
+      );
+      if (!blob) throw new Error('capture');
+      busy.current = false;
+      await preparePhoto(new File([blob], 'camera.jpg', { type: 'image/jpeg' }), true);
+      closeCamera();
+    } catch {
+      setError('Não foi possível capturar. Tente novamente.');
+    } finally {
+      busy.current = false;
+      setPending(false);
+    }
+  }
+
+  async function submit(form: FormData) {
+    if (busy.current || !captured) return;
+    if (!capturedAt || !Number.isFinite(new Date(capturedAt).getTime()))
+      return setError('Informe quando esta fotografia foi tirada.');
+    busy.current = true;
     setPending(true);
     setError('');
     try {
       if (!hasConsent) {
-        if (formData.get('photoConsent') !== 'on') throw new Error('CONSENT_REQUIRED');
+        if (form.get('photoConsent') !== 'on')
+          throw new Error('Autorize o armazenamento privado para enviar.');
         const consent = await fetch('/api/consents', {
           method: 'POST',
+          signal: AbortSignal.timeout(45000),
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ types: ['PHOTO_PROCESSING'], version: '2026-09-08' }),
         });
-        if (!consent.ok) throw new Error('CONSENT_FAILED');
+        if (!consent.ok)
+          throw new Error('Não foi possível registrar sua autorização. Tente novamente.');
       }
-      const dimensions = await readDimensions(captured);
-      formData.set('photo', captured);
-      formData.set('uploadId', uploadId);
-      formData.set('capturedAt', new Date(captured.lastModified).toISOString());
-      formData.set('width', String(dimensions.width));
-      formData.set('height', String(dimensions.height));
-      formData.set(
+      const bitmap = await createImageBitmap(captured);
+      form.set('width', String(bitmap.width));
+      form.set('height', String(bitmap.height));
+      form.set(
         'orientation',
-        dimensions.width === dimensions.height
+        bitmap.width === bitmap.height
           ? 'SQUARE'
-          : dimensions.width > dimensions.height
+          : bitmap.width > bitmap.height
             ? 'LANDSCAPE'
             : 'PORTRAIT',
       );
-      formData.set('framing', 'CENTERED');
-      formData.set('lighting', 'EVEN');
+      bitmap.close();
+      form.set('photo', captured);
+      form.set('uploadId', uploadId);
+      form.set('capturedAt', new Date(capturedAt).toISOString());
+      form.set('framing', 'NOT_ASSESSED');
+      form.set('lighting', 'NOT_ASSESSED');
       const response = await fetch(`/api/journeys/${journeyId}/photos`, {
         method: 'POST',
-        body: formData,
+        signal: AbortSignal.timeout(45000),
+        body: form,
       });
-      const body = (await response.json()) as { code?: string; id?: string };
-      if (!response.ok || !body.id) throw new Error(body.code ?? 'UPLOAD_FAILED');
+      if (response.status === 413)
+        throw new Error('A imagem excedeu o limite de envio. Tente uma nova captura.');
+      const result = (await response.json()) as { id?: string; code?: string };
+      if (!response.ok || !result.id)
+        throw new Error(
+          result.code === 'INVALID_CAPTURE_TIME'
+            ? 'Use uma fotografia dos últimos sete dias, sem data futura.'
+            : 'Não foi possível enviar. Sua captura está preservada para tentar novamente.',
+        );
       setCaptured(null);
-      setPreviewURL('');
-      setUploadId(crypto.randomUUID());
-      router.push(`/journey/${journeyId}/checkpoint/${body.id}`);
+      setPreview('');
+      router.push(`/journey/${journeyId}/checkpoint/${result.id}`);
       router.refresh();
     } catch (cause) {
-      const code = cause instanceof Error ? cause.message : '';
       setError(
-        code === 'CONSENT_REQUIRED'
-          ? 'Aceite o tratamento da fotografia para continuar.'
-          : 'Não foi possível guardar a fotografia. Revise a captura e tente novamente.',
+        cause instanceof Error && !['TimeoutError', 'AbortError', 'TypeError'].includes(cause.name)
+          ? cause.message
+          : 'Não foi possível confirmar o envio. Sua captura foi mantida: tente novamente para verificar o mesmo registro.',
       );
     } finally {
-      busyRef.current = false;
+      busy.current = false;
       setPending(false);
     }
   }
 
   async function removePhoto(id: string) {
-    if (!window.confirm('Excluir permanentemente esta fotografia?')) return;
+    if (busy.current || !window.confirm('Excluir permanentemente esta fotografia?')) return;
+    busy.current = true;
     setPending(true);
-    const response = await fetch(`/api/photos/${id}`, { method: 'DELETE' });
-    setPending(false);
-    if (response.ok) router.refresh();
-    else setError('Não foi possível excluir a fotografia.');
+    setError('');
+    try {
+      const response = await fetch(`/api/photos/${id}`, {
+        signal: AbortSignal.timeout(15000),
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('delete');
+      router.refresh();
+    } catch {
+      setError('Não foi possível confirmar a exclusão. Tente novamente.');
+    } finally {
+      busy.current = false;
+      setPending(false);
+    }
   }
 
   return (
-    <section
-      className="mx-auto mt-12 w-full max-w-xl text-center"
-      aria-labelledby="photo-journal-title"
-    >
-      <p className="text-xs font-bold uppercase tracking-[.17em] text-forest">
-        {firstCapture ? 'Passo final · Primeira memória' : 'Próximo checkpoint'}
-      </p>
-      <h2 id="photo-journal-title" className="mt-2 font-serif text-3xl">
-        {firstCapture ? 'Registre onde sua história começa' : 'Fotografe a mesma região'}
-      </h2>
-      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-graphite/60">
-        {firstCapture
-          ? 'Abra a câmera, centralize a região e revise a imagem antes de guardar seu primeiro checkpoint.'
-          : 'Luz uniforme, região centralizada e distância semelhante tornam a comparação mais consistente.'}
-      </p>
-      <Surface className="mt-6 overflow-hidden p-4 sm:p-6">
+    <section className="mx-auto mt-8 w-full max-w-xl" aria-labelledby="photo-journal-title">
+      <header className="mb-5">
+        <p className="text-sm font-semibold text-accent">
+          {firstCapture ? 'Sua primeira memória' : 'Fotografia guiada'}
+        </p>
+        <h2 id="photo-journal-title" className="mt-2 font-serif text-3xl">
+          A mesma região. Um novo momento.
+        </h2>
+        <p className="mt-3 text-base text-ivory/80">
+          Use luz uniforme e repita a distância. A imagem fica privada, sem filtros.
+        </p>
+      </header>
+      <Surface className="p-4 sm:p-6">
         {cameraOpen && (
-          <div className="relative mx-auto aspect-[3/4] max-h-[65vh] overflow-hidden rounded-[2rem] bg-graphite">
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              playsInline
-              className="h-full w-full object-cover"
-            />
-            <div
-              className="pointer-events-none absolute inset-[12%] rounded-[40%] border border-ivory/80"
-              aria-hidden="true"
-            />
-            <button
-              type="button"
-              onClick={takePhoto}
-              className="absolute bottom-5 left-1/2 size-16 -translate-x-1/2 rounded-full border-4 border-ivory bg-ivory/30"
-              aria-label="Tirar fotografia"
-            />
+          <div>
+            <div className="mb-3 flex justify-between gap-3">
+              <Button variant="quiet" onClick={closeCamera} disabled={pending}>
+                Fechar câmera
+              </Button>
+              <Button
+                variant="quiet"
+                onClick={() => void startCamera(facing === 'environment' ? 'user' : 'environment')}
+                disabled={pending}
+              >
+                Trocar câmera
+              </Button>
+            </div>
+            <div className="relative overflow-hidden rounded-2xl bg-graphite">
+              <video
+                ref={video}
+                autoPlay
+                muted
+                playsInline
+                controls={false}
+                className="max-h-[60dvh] w-full object-contain"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-[12%] rounded-3xl border border-ivory/70"
+              />
+            </div>
+            <Button
+              variant="quiet"
+              className="mt-2 w-full"
+              onClick={() => {
+                void video.current
+                  ?.play()
+                  .then(() => setError(''))
+                  .catch(() => setError('Feche a câmera e confira a permissão do navegador.'));
+              }}
+            >
+              Ativar prévia da câmera
+            </Button>
+            <Button className="mt-4 w-full" disabled={pending} onClick={() => void takePhoto()}>
+              {pending ? 'Preparando…' : 'Tirar fotografia'}
+            </Button>
           </div>
         )}
-        {!cameraOpen && previewURL && (
-          <div className="relative mx-auto aspect-[3/4] overflow-hidden rounded-[2rem] bg-mineral">
+        {!cameraOpen && preview && (
+          <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-graphite">
             <Image
-              src={previewURL}
-              alt="Prévia privada da fotografia capturada"
+              src={preview}
+              alt="Prévia integral da fotografia, sem recorte"
               fill
               unoptimized
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         )}
-        {!cameraOpen && !previewURL && (
-          <div className="mx-auto flex aspect-[3/4] max-h-96 items-center justify-center rounded-[2rem] border border-dashed border-forest/30 bg-sand/40 px-8">
-            <p className="font-serif text-2xl text-forest">Enquadre sua pele com calma.</p>
+        {!cameraOpen && !preview && (
+          <div className="rounded-2xl border border-dashed border-violet p-8 text-center">
+            <p className="font-serif text-2xl">Sua pele, no seu tempo.</p>
+            <p className="mt-2 text-base text-ivory/80">
+              Abra a câmera quando estiver em um lugar bem iluminado.
+            </p>
           </div>
         )}
-        {canCapture ? (
-          <form action={submit} className="mt-5 grid gap-4 text-left">
-            {!cameraOpen && (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Button type="button" onClick={() => void startCamera()}>
-                  {captured ? 'Tirar novamente' : 'Abrir câmera'}
-                </Button>
-                <label className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full border border-graphite/15 px-5 text-sm font-semibold text-forest">
-                  Usar arquivo
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    capture="environment"
-                    className="sr-only"
-                    onChange={(event) => chooseFile(event.target.files?.[0])}
-                  />
-                </label>
-              </div>
+        {canCapture && !cameraOpen && (
+          <form action={submit} className="mt-5 grid gap-4">
+            <Button type="button" disabled={pending || opening} onClick={() => void startCamera()}>
+              {opening ? 'Abrindo câmera…' : captured ? 'Tirar novamente' : 'Abrir câmera'}
+            </Button>
+            {opening && (
+              <Button variant="quiet" onClick={closeCamera}>
+                Cancelar abertura
+              </Button>
             )}
-            {!cameraOpen && captured && (
+            <label className="flex min-h-12 cursor-pointer items-center justify-center rounded-2xl border border-ivory/25 text-base focus-within:ring-2 focus-within:ring-accent">
+              Selecionar arquivo
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                disabled={pending || opening}
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void preparePhoto(file, false);
+                  event.target.value = '';
+                }}
+              />
+            </label>
+            <p className="text-sm text-ivory/80">
+              JPEG, PNG ou WebP. Arquivos são reduzidos para envio; use fotos dos últimos sete dias.
+            </p>
+            {captured && (
               <>
-                <label className="grid gap-2 text-sm font-semibold">
+                {imported && (
+                  <label className="grid gap-2 text-base">
+                    Quando você tirou esta foto?
+                    <input
+                      type="datetime-local"
+                      required
+                      value={capturedAt}
+                      onChange={(event) => setCapturedAt(event.target.value)}
+                      className="min-h-12 min-w-0 rounded-xl border border-ivory/30 bg-surface px-3"
+                    />
+                    <span className="text-sm text-ivory/80">
+                      Informe a data da captura, não a data em que o arquivo foi copiado.
+                    </span>
+                  </label>
+                )}
+                <label className="grid gap-2 text-base">
                   Distância aproximada
                   <select
                     name="distance"
-                    defaultValue="CLOSE"
-                    className="min-h-12 rounded-2xl border border-graphite/20 bg-surface px-4 font-normal"
+                    className="min-h-12 rounded-xl border border-ivory/30 bg-surface px-3"
                   >
                     <option value="CLOSE">Próxima</option>
                     <option value="MEDIUM">Média</option>
                   </select>
                 </label>
                 {!hasConsent && (
-                  <label className="flex items-start gap-3 text-sm leading-6">
+                  <label className="flex gap-3 text-base">
                     <input
                       type="checkbox"
                       name="photoConsent"
                       required
-                      className="mt-1 size-4 accent-forest"
+                      className="mt-1 size-5 shrink-0 accent-accent"
                     />
                     <span>
-                      Autorizo o armazenamento privado desta fotografia para acompanhar minha
-                      jornada. Ela não será usada para diagnóstico.
+                      Autorizo guardar esta foto de forma privada para acompanhar minha jornada.{' '}
+                      <Link href="/privacy" className="underline">
+                        Como usamos as fotos
+                      </Link>
+                      .
                     </span>
                   </label>
                 )}
                 <Button type="submit" disabled={pending}>
-                  {pending ? 'Protegendo e enviando…' : 'Enviar fotografia'}
+                  {pending ? 'Enviando com segurança…' : 'Enviar fotografia'}
                 </Button>
               </>
             )}
           </form>
-        ) : (
-          <p className="mt-5 text-sm text-graphite/60">
-            Reative a jornada para criar um novo checkpoint.
+        )}
+        {!canCapture && (
+          <p className="mt-4 text-base">
+            Esta jornada não está ativa. Reative-a para registrar novas fotos.
           </p>
         )}
       </Surface>
       {error && (
-        <p role="alert" className="mt-4 rounded-xl bg-clay/10 p-4 text-sm text-clay">
+        <p role="alert" className="mt-4 rounded-xl border border-ivory/40 p-4 text-base">
           {error}
         </p>
       )}
       {photos.length > 0 && (
-        <div className="mt-10 text-left">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-[.66rem] font-bold uppercase tracking-[.18em] text-forest">
-                Memórias
-              </p>
-              <h3 className="mt-1 font-serif text-3xl">Linha do tempo</h3>
-            </div>
+        <section id="historico" className="mt-10" aria-label="Histórico de fotografias">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h3 className="font-serif text-3xl">Suas memórias</h3>
             {photos.length > 1 && (
-              <Link
-                href={`/journey/${journeyId}/compare`}
-                className="inline-flex min-h-11 items-center rounded-full bg-forest px-4 text-xs font-bold text-ivory"
-              >
-                Comparar
+              <Link className="action-link" href={`/journey/${journeyId}/compare`}>
+                Comparar registros
               </Link>
             )}
           </div>
-          <ul className="mt-4 divide-y divide-graphite/10 border-y border-graphite/10">
+          <ol className="mt-5 divide-y divide-ivory/15">
             {photos.map((photo, index) => (
-              <li key={photo.id} className="flex items-center justify-between gap-4 py-4">
-                <span className="flex items-center gap-3">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-sand text-xs font-bold text-forest">
-                    {photos.length - index}
+              <li key={photo.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
+                <Link
+                  className="min-h-12 flex-1 rounded-lg py-2"
+                  href={`/journey/${journeyId}/checkpoint/${photo.id}`}
+                >
+                  <strong className="block">Memória {photos.length - index}</strong>
+                  <span className="text-sm text-ivory/80">
+                    {new Intl.DateTimeFormat('pt-BR', {
+                      dateStyle: 'medium',
+                      timeZone: 'America/Sao_Paulo',
+                    }).format(new Date(photo.capturedAt))}
                   </span>
-                  <span>
-                    <strong className="block text-sm">Checkpoint {photos.length - index}</strong>
-                    <span className="text-xs text-graphite/55">
-                      {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(
-                        new Date(photo.capturedAt),
-                      )}{' '}
-                      · {photo.width} × {photo.height}
-                    </span>
-                  </span>
-                </span>
-                <span className="flex gap-1">
-                  <Link
-                    className="min-h-11 px-3 py-3 text-sm font-semibold text-forest"
-                    href={`/journey/${journeyId}/checkpoint/${photo.id}`}
-                  >
-                    Abrir
-                  </Link>
-                  <button
-                    disabled={pending}
-                    className="min-h-11 px-3 text-sm font-semibold text-clay"
-                    onClick={() => void removePhoto(photo.id)}
-                  >
-                    Excluir
-                  </button>
-                </span>
+                </Link>
+                <button
+                  className="min-h-12 rounded-xl px-3 text-sm underline"
+                  disabled={pending}
+                  onClick={() => void removePhoto(photo.id)}
+                >
+                  Excluir
+                </button>
               </li>
             ))}
-          </ul>
-        </div>
+          </ol>
+        </section>
       )}
     </section>
   );
-}
-
-function stopCamera(stream: MediaStream | null) {
-  stream?.getTracks().forEach((track) => track.stop());
-}
-async function readDimensions(file: File) {
-  const bitmap = await createImageBitmap(file);
-  const value = { width: bitmap.width, height: bitmap.height };
-  bitmap.close();
-  return value;
 }

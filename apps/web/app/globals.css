@@ -2,19 +2,22 @@
 @source '../../../packages/ui/src';
 
 @theme {
-  --color-graphite: #242622;
-  --color-ivory: #f8f4ea;
-  --color-sand: #e8dfcf;
-  --color-mineral: #d1c7b5;
-  --color-forest: #23483b;
-  --color-forest-light: #356454;
-  --color-surface: #fffdf7;
-  --color-clay: #a16f5b;
-  --color-moss: #769386;
-  --color-glow: #d9c9a7;
+  --color-graphite: #18181f;
+  --color-ivory: #f4ecdf;
+  --color-plum: #2b1833;
+  --color-violet: #8066a3;
+  --color-accent: #a7c957;
+  --color-surface: #35203f;
+  --color-sand: #432d50;
+  --color-mineral: #503760;
+  --color-forest: #2b1833;
+  --color-forest-light: #432d50;
+  --color-clay: #f4ecdf;
+  --color-moss: #8066a3;
+  --color-glow: #8066a3;
   --font-sans: var(--font-memyra-sans);
   --font-serif: var(--font-memyra-serif);
-  --shadow-soft: 0 12px 40px rgb(36 38 34 / 8%);
+  --shadow-soft: 0 12px 40px rgb(24 24 31 / 18%);
 }
 
 @layer base {
@@ -22,16 +25,19 @@
     box-sizing: border-box;
   }
   html {
-    background: var(--color-ivory);
-    color: var(--color-graphite);
+    background: var(--color-plum);
+    color: var(--color-ivory);
+    color-scheme: dark;
   }
   body {
     min-height: 100vh;
     margin: 0;
     background:
-      radial-gradient(circle at 50% -8rem, rgb(217 201 167 / 34%), transparent 30rem),
-      var(--color-ivory);
+      radial-gradient(ellipse at 90% 0%, rgb(128 102 163 / 12%), transparent 32rem),
+      var(--color-plum);
     font-family: var(--font-sans), sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
   }
   a {
     color: inherit;
@@ -42,15 +48,37 @@
     -webkit-tap-highlight-color: transparent;
   }
   ::selection {
-    background: var(--color-sand);
+    background: var(--color-accent);
+    color: var(--color-plum);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+  button,
+  a,
+  input,
+  select {
+    touch-action: manipulation;
   }
 }
 
 @utility page-shell {
   margin-inline: auto;
   width: 100%;
-  max-width: 48rem;
-  padding: 1.5rem 1.25rem 7rem;
+  max-width: 36rem;
+  padding: 1.25rem 1.25rem calc(7rem + env(safe-area-inset-bottom));
 }
 
 @keyframes memyra-breathe {
@@ -76,6 +104,7 @@
   *,
   *::before,
   *::after {
+    animation: none !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
@@ -83,7 +112,87 @@
 
 @utility title-display {
   font-family: var(--font-serif), serif;
-  font-size: clamp(2rem, 9vw, 3.4rem);
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+@utility action-link {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-accent);
+  color: var(--color-graphite);
+  font-weight: 700;
+  text-align: center;
+}
+
+@utility panel {
+  border: 1px solid rgb(244 236 223 / 14%);
+  border-radius: 1.5rem;
+  background: var(--color-surface);
+}
+
+.journey-map {
+  position: relative;
+  padding: 0;
+  list-style: none;
+}
+.journey-node {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 0 2.25rem;
+}
+.journey-node::after {
+  content: '';
+  position: absolute;
+  left: 1.7rem;
+  top: calc(50% + 1.2rem);
+  bottom: -1.7rem;
+  border-left: 2px dashed var(--color-violet);
+  opacity: 0.8;
+}
+.journey-node:last-child::after {
+  display: none;
+}
+.journey-marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 2px solid var(--color-violet);
+  border-radius: 50%;
+  background: var(--color-plum);
+  font-weight: 700;
+}
+.journey-marker-current {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 6px rgb(167 201 87 / 12%);
+  color: var(--color-accent);
+}
+.journey-marker-done {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-graphite);
+}
+@media (min-width: 390px) {
+  .journey-node-right {
+    margin-left: 2rem;
+  }
+  .journey-node:nth-child(odd):not(:last-child)::after {
+    transform: rotate(-20deg);
+    transform-origin: top;
+  }
+  .journey-node:nth-child(even)::after {
+    transform: rotate(20deg);
+    transform-origin: top;
+  }
 }

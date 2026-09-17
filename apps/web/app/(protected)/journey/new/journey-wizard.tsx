@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Eyebrow, Surface } from '@memyra/ui';
 import { createJourneyInputSchema } from '@memyra/validation';
@@ -61,8 +61,7 @@ type FormState = {
   goal?: JourneyGoal;
 };
 
-const stepTitles = ['Região', 'Contexto', 'Tempo', 'Objetivo', 'Nome', 'Revisão'] as const;
-
+const stepTitles = ['Região', 'Seu contexto', 'Confirmar'] as const;
 function labelFor<T extends string>(
   options: ReadonlyArray<{ value: T; label: string }>,
   value?: T,
@@ -73,44 +72,31 @@ function labelFor<T extends string>(
 export function JourneyWizard({ guided = false }: { guided?: boolean }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormState>({ name: '' });
+  const [form, setForm] = useState<FormState>({
+    name: '',
+    context: 'UNKNOWN',
+    approximateAge: 'UNKNOWN',
+    goal: 'TRACK_EVOLUTION',
+  });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-
-  const allowedSides = useMemo(() => {
-    if (!form.region) return sides;
-    if (['ARM', 'HAND', 'LEG'].includes(form.region))
-      return sides.filter((item) => item.value !== 'NOT_APPLICABLE');
-    return sides;
-  }, [form.region]);
-
-  function canContinue() {
-    if (step === 0) return Boolean(form.region && form.side);
-    if (step === 1) return Boolean(form.context);
-    if (step === 2) return Boolean(form.approximateAge);
-    if (step === 3) return Boolean(form.goal);
-    if (step === 4) return form.name.trim().length >= 2 && form.name.trim().length <= 80;
-    return true;
-  }
-
-  function next() {
-    if (!canContinue()) {
-      setError(step === 4 ? 'Use entre 2 e 80 caracteres.' : 'Escolha uma opção para continuar.');
+  const busy = useRef(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const allowedSides =
+    form.region && ['ARM', 'HAND', 'LEG'].includes(form.region)
+      ? sides.filter((side) => side.value !== 'NOT_APPLICABLE')
+      : sides;
+  function move(next: number) {
+    if (step === 0 && next > 0 && (!form.region || !form.side)) {
+      setError('Escolha a região e o lado para continuar.');
       return;
     }
     setError('');
-    setStep((current) => Math.min(current + 1, stepTitles.length - 1));
+    setStep(next);
+    requestAnimationFrame(() => heading.current?.focus());
   }
-
-  function selectRegion(region: SkinAreaRegion) {
-    setForm((current) => {
-      const next = { ...current, region };
-      delete next.side;
-      return next;
-    });
-  }
-
   async function submit() {
+    if (busy.current) return;
     const payload = {
       name: form.name,
       skinArea: { region: form.region, side: form.side },
@@ -119,225 +105,233 @@ export function JourneyWizard({ guided = false }: { guided?: boolean }) {
       goal: form.goal,
     };
     if (!createJourneyInputSchema.safeParse(payload).success) {
-      setError('Revise os dados da jornada antes de continuar.');
+      setError('Revise o nome e a região da jornada.');
       return;
     }
-
+    busy.current = true;
     setSubmitting(true);
     setError('');
     try {
       const response = await fetch('/api/journeys', {
         method: 'POST',
+        signal: AbortSignal.timeout(20_000),
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json()) as { id?: string; code?: string };
-      if (!response.ok || !result.id) {
-        setError(
-          result.code === 'DATABASE_NOT_CONFIGURED'
-            ? 'O banco local ainda não está configurado. Consulte o runbook de desenvolvimento.'
-            : 'Não foi possível criar a jornada agora. Tente novamente.',
-        );
-        return;
-      }
-      router.push(guided ? `/journey/${result.id}/start` : `/journey/${result.id}`);
+      const result = (await response.json()) as { id?: string };
+      if (!response.ok || !result.id) throw new Error('create');
+      router.push(`/journey/${result.id}/start`);
     } catch {
-      setError('Não foi possível conectar ao serviço. Tente novamente.');
+      setError(
+        'Não foi possível confirmar a criação. Confira suas jornadas antes de tentar de novo.',
+      );
     } finally {
+      busy.current = false;
       setSubmitting(false);
     }
   }
-
   return (
-    <section className="mx-auto max-w-xl pt-8">
-      <Eyebrow>{guided ? 'Preparando sua primeira jornada' : 'Método REEDUCA'}</Eyebrow>
-      <div className="mt-5 flex items-center justify-between gap-4">
-        <p className="text-sm font-semibold">
-          {guided ? 'Passo 2 · ' : ''}Etapa {step + 1} de {stepTitles.length}
-        </p>
-        <p className="text-sm text-graphite/55">{stepTitles[step]}</p>
+    <section className="mx-auto max-w-xl pt-6">
+      <Eyebrow>{guided ? 'Seu ponto de partida' : 'Nova jornada'}</Eyebrow>
+      <div className="mt-4 flex justify-between gap-3 text-sm">
+        <span>Etapa {step + 1} de 3</span>
+        <span>{stepTitles[step]}</span>
       </div>
-      <div className="mt-3 h-1 overflow-hidden rounded-full bg-mineral" aria-hidden="true">
-        <div
-          className="h-full bg-forest transition-[width] motion-reduce:transition-none"
-          style={{ width: `${((step + 1) / stepTitles.length) * 100}%` }}
-        />
+      <div className="mt-3 grid grid-cols-3 gap-2" aria-hidden="true">
+        {stepTitles.map((title, index) => (
+          <span
+            key={title}
+            className={`h-1 rounded-full ${index <= step ? 'bg-accent' : 'bg-mineral'}`}
+          />
+        ))}
       </div>
-
-      <div className="mt-10 min-h-[25rem]">
+      <h1 ref={heading} tabIndex={-1} className="title-display mt-8">
+        {
+          [
+            'Qual região vamos acompanhar?',
+            'Conte só o que você sabe.',
+            'Pronta para sua primeira memória?',
+          ][step]
+        }
+      </h1>
+      <div className="my-7">
         {step === 0 && (
-          <ChoiceStep<SkinAreaRegion>
-            title="Qual região você quer acompanhar?"
-            name="region"
-            options={regions}
-            value={form.region}
-            onChange={selectRegion}
-          />
-        )}
-        {step === 0 && form.region && (
-          <div className="mt-8">
-            <ChoiceStep<SkinAreaSide>
-              title="Qual lado?"
-              name="side"
-              options={allowedSides}
-              value={form.side}
-              onChange={(side) => setForm({ ...form, side })}
-            />
-          </div>
-        )}
-        {step === 1 && (
-          <ChoiceStep<JourneyContext>
-            title="Como você descreve esse contexto?"
-            description="Escolha a opção que mais se aproxima da sua percepção. Isso não é um diagnóstico."
-            name="context"
-            options={contexts}
-            value={form.context}
-            onChange={(context) => setForm({ ...form, context })}
-          />
-        )}
-        {step === 2 && (
-          <ChoiceStep<ApproximateAge>
-            title="Há quanto tempo você percebe essa marca?"
-            description="Uma faixa aproximada é suficiente."
-            name="approximateAge"
-            options={ages}
-            value={form.approximateAge}
-            onChange={(approximateAge) => setForm({ ...form, approximateAge })}
-          />
-        )}
-        {step === 3 && (
-          <ChoiceStep<JourneyGoal>
-            title="Qual é seu objetivo principal?"
-            name="goal"
-            options={goals}
-            value={form.goal}
-            onChange={(goal) => setForm({ ...form, goal })}
-          />
-        )}
-        {step === 4 && (
-          <div>
-            <h1 className="font-serif text-4xl leading-tight">Dê um nome à sua jornada.</h1>
-            <p className="mt-3 text-sm leading-6 text-graphite/60">
-              Use algo simples que ajude você a reconhecer este acompanhamento.
-            </p>
-            <label className="mt-8 block text-sm font-semibold" htmlFor="journey-name">
-              Nome da jornada
-            </label>
-            <input
-              id="journey-name"
-              value={form.name}
-              onChange={(event) => setForm({ ...form, name: event.target.value })}
-              maxLength={80}
-              className="mt-2 min-h-12 w-full rounded-2xl border border-graphite/20 bg-surface px-4 text-base outline-none focus:border-forest focus:ring-2 focus:ring-forest/20"
-              placeholder={
-                form.region ? `Minha jornada — ${labelFor(regions, form.region)}` : 'Minha jornada'
+          <>
+            <Choices
+              label="Região da pele"
+              name="region"
+              options={regions}
+              value={form.region}
+              onChange={(region) =>
+                setForm((current) => ({
+                  ...current,
+                  region,
+                  side: undefined,
+                  name: 'Minha jornada — ' + labelFor(regions, region),
+                }))
               }
             />
-            <p className="mt-2 text-right text-xs text-graphite/50">{form.name.length}/80</p>
+            {form.region && (
+              <div className="mt-6">
+                <Choices
+                  label="Lado"
+                  name="side"
+                  options={allowedSides}
+                  value={form.side}
+                  onChange={(side) => setForm({ ...form, side })}
+                />
+              </div>
+            )}
+          </>
+        )}
+        {step === 1 && (
+          <div className="grid gap-6">
+            <p className="text-base text-ivory/80">
+              Estas informações representam sua percepção, não um diagnóstico. Você pode manter “Não
+              sei informar”.
+            </p>
+            <Select
+              label="Como você descreve essa marca?"
+              options={contexts}
+              value={form.context}
+              onChange={(context) => setForm({ ...form, context })}
+            />
+            <Select
+              label="Há quanto tempo você percebe?"
+              options={ages}
+              value={form.approximateAge}
+              onChange={(approximateAge) => setForm({ ...form, approximateAge })}
+            />
+            <Select
+              label="O que você quer acompanhar?"
+              options={goals}
+              value={form.goal}
+              onChange={(goal) => setForm({ ...form, goal })}
+            />
           </div>
         )}
-        {step === 5 && (
-          <div>
-            <h1 className="font-serif text-4xl leading-tight">Sua trajetória começa aqui.</h1>
-            <p className="mt-3 text-sm leading-6 text-graphite/60">
-              Revise o que será registrado. Você poderá acompanhar esta mesma região ao longo do
-              tempo.
-            </p>
-            <Surface className="mt-8 divide-y divide-graphite/8 px-5">
-              {[
-                ['Jornada', form.name.trim()],
-                ['Região', labelFor(regions, form.region)],
-                ['Lado', labelFor(sides, form.side)],
-                ['Contexto', labelFor(contexts, form.context)],
-                ['Tempo percebido', labelFor(ages, form.approximateAge)],
-                ['Objetivo', labelFor(goals, form.goal)],
-              ].map(([label, value]) => (
-                <div key={label} className="flex gap-4 py-4">
-                  <dt className="w-28 shrink-0 text-xs font-bold uppercase tracking-wide text-graphite/50">
-                    {label}
-                  </dt>
-                  <dd className="text-sm leading-5">{value}</dd>
-                </div>
-              ))}
+        {step === 2 && (
+          <div className="grid gap-6">
+            <label className="grid gap-2 font-semibold">
+              Nome da jornada
+              <input
+                value={form.name}
+                maxLength={80}
+                onChange={(event) => setForm({ ...form, name: event.target.value })}
+                className="min-h-12 w-full rounded-xl border border-ivory/30 bg-surface px-4 text-base font-normal"
+              />
+            </label>
+            <Surface className="p-5">
+              <dl className="grid gap-4">
+                {[
+                  ['Região', labelFor(regions, form.region)],
+                  ['Lado', labelFor(sides, form.side)],
+                  ['Contexto informado', labelFor(contexts, form.context)],
+                  ['Tempo percebido', labelFor(ages, form.approximateAge)],
+                  ['Objetivo', labelFor(goals, form.goal)],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <dt className="text-sm text-ivory/80">{label}</dt>
+                    <dd className="mt-1 text-base font-semibold">{value}</dd>
+                  </div>
+                ))}
+              </dl>
             </Surface>
+            <p className="text-base text-ivory/80">
+              Depois de criar, você poderá abrir a câmera ou fotografar mais tarde. A jornada criada
+              permanece salva na sua conta.
+            </p>
           </div>
         )}
       </div>
-
       {error && (
-        <p
-          className="mb-4 rounded-xl bg-clay/10 px-4 py-3 text-sm font-medium text-clay"
-          role="alert"
-          aria-live="polite"
-        >
+        <p role="alert" className="mb-4 rounded-xl border border-ivory/30 p-4">
           {error}
         </p>
       )}
-      <div className="flex gap-3 border-t border-graphite/10 pt-5">
+      <div className="grid grid-cols-2 gap-3 border-t border-ivory/20 pt-5">
         {step > 0 && (
-          <Button
-            variant="secondary"
-            className="flex-1"
-            onClick={() => {
-              setError('');
-              setStep((current) => current - 1);
-            }}
-          >
+          <Button variant="secondary" disabled={submitting} onClick={() => move(step - 1)}>
             Voltar
           </Button>
         )}
-        {step < 5 ? (
-          <Button className="flex-1" onClick={next}>
-            Continuar
-          </Button>
-        ) : (
-          <Button className="flex-1" disabled={submitting} onClick={() => void submit()}>
-            {submitting ? 'Criando…' : 'Criar jornada'}
-          </Button>
-        )}
+        <Button
+          className={step === 0 ? 'col-span-2' : ''}
+          disabled={submitting}
+          onClick={() => (step < 2 ? move(step + 1) : void submit())}
+        >
+          {submitting ? 'Criando…' : step < 2 ? 'Continuar' : 'Criar jornada'}
+        </Button>
       </div>
+      <p className="mt-4 text-sm text-ivory/80">
+        Antes da confirmação, estas escolhas ficam apenas nesta página.
+      </p>
     </section>
   );
 }
 
-function ChoiceStep<T extends string>({
-  title,
-  description,
+function Choices<T extends string>({
+  label,
   name,
   options,
   value,
   onChange,
-}: Readonly<{
-  title: string;
-  description?: string | undefined;
+}: {
+  label: string;
   name: string;
-  options: ReadonlyArray<{ value: T; label: string }>;
+  options: readonly { value: T; label: string }[];
   value: T | undefined;
   onChange: (value: T) => void;
-}>) {
+}) {
   return (
     <fieldset>
-      <legend className="font-serif text-4xl leading-tight">{title}</legend>
-      {description && <p className="mt-3 text-sm leading-6 text-graphite/60">{description}</p>}
-      <div className="mt-7 grid gap-3">
+      <legend className="mb-3 font-semibold">{label}</legend>
+      <div className="grid grid-cols-2 gap-3">
         {options.map((option) => (
           <label
             key={option.value}
-            className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition-colors focus-within:ring-2 focus-within:ring-forest/30 ${value === option.value ? 'border-forest bg-forest text-ivory' : 'border-graphite/12 bg-surface hover:border-forest/40'}`}
+            className={`flex min-h-14 cursor-pointer items-center gap-2 rounded-xl border p-3 focus-within:ring-2 focus-within:ring-accent ${option.value === value ? 'border-accent bg-sand' : 'border-ivory/25 bg-surface'}`}
           >
             <input
               type="radio"
-              className="size-4 accent-forest"
               name={name}
               value={option.value}
-              checked={value === option.value}
-              readOnly
-              onClick={() => onChange(option.value)}
+              checked={option.value === value}
+              onChange={() => onChange(option.value)}
+              className="size-4 shrink-0 accent-accent"
             />
-            <span className="text-sm font-semibold">{option.label}</span>
+            <span className="text-base">{option.label}</span>
           </label>
         ))}
       </div>
     </fieldset>
+  );
+}
+function Select<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly { value: T; label: string }[];
+  value: T | undefined;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <label className="grid min-w-0 gap-2 text-base font-semibold">
+      {label}
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value as T)}
+        className="min-h-12 min-w-0 rounded-xl border border-ivory/30 bg-surface px-3 font-normal"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
