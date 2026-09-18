@@ -20,6 +20,15 @@ Data da implementação: 16/09/2026. Status global da auditoria: **PARTIAL**. A 
 
 ## Entregue nesta etapa
 
+### PWA — 18/09/2026
+
+- Base publicada anterior: `183e61834685677bfdbb7669d5e8f34533d984d5`, Vercel `Ez26ivtdoBnSpuMTcdX97tCSMWqx`, Production/Ready. CI anterior: 62 testes aprovados com PostgreSQL isolado. Isso substitui apenas o status operacional antigo, não os riscos da auditoria.
+- Página pública `/instalar`, identidade/ícones, manifest standalone, instruções por plataforma, prompt nativo quando disponível e links em login/ajustes. Nenhuma migration, dependência nova, credencial ou alteração em dados.
+- Worker network-only: não armazena imagens/PII/respostas; fallback genérico 503 somente em falha de rede de navegação. APIs e imagens não são interceptadas. ADR-009 e runbook PWA registram limites e rollback do worker.
+- Testes públicos: 12 aprovados em desktop e viewport mobile no Edge, incluindo largura 320 px, prompt simulado e falha de rede injetada no worker. Revisão independente: nenhum achado novo P1/P2. `npm run verify` repetido em 18/09: exit 0; 70 testes aprovados, 5 de integração ignorados, lint/tipos/build verdes.
+- **PARTIAL**: instalação física Android/iPhone, modo standalone e câmera/retomada em dispositivo ainda não certificados. Não é APK/IPA, nem publicação em lojas; instalação nunca é silenciosa.
+- As pendências anteriores de exclusão, documentos legais, recuperação de acesso e QA privado continuam abertas. A PWA não as amplia nem as resolve.
+
 - Marca Pelmorya na interface/metadata/autenticação e nova família de cores; tipografia maior, foco visível, contêiner centralizado e redução de movimento.
 - Introdução em uma tela e criação de jornada em três etapas. Campos de percepção aceitam desconhecido. Jornada criada sem foto pode ser retomada após login; escolhas ainda não confirmadas não são persistidas.
 - Trilha visual com cinco marcos clicáveis quando disponíveis, ação principal derivada de regra pura, estado de jornada inativa e dia concluído. Navegação não marca Hoje e Criar ao mesmo tempo.
@@ -57,7 +66,7 @@ READY abaixo significa implementação local com evidência no escopo indicado, 
 | A19 · Uso por produto        | TODO    | Nenhum conteúdo de rótulo ou protocolo foi inventado                                                           |
 | A20 · Quality gates          | PARTIAL | Novos unitários/contratos/smoke; integração completa e E2E privado pendentes                                   |
 | A21 · Checkout/docs          | PARTIAL | Este registro documenta o estado; raiz e checkout de publicação ainda separados                                |
-| A22 · Operação/PWA/IA        | TODO    | Não introduzidos sem decisões de retenção, custos e avaliação                                                  |
+| A22 · Operação/PWA/IA        | PARTIAL | PWA implementada e testada conforme registro de 18/09 acima; QA físico, IA e push continuam pendentes           |
 
 ## Validação e limites
 

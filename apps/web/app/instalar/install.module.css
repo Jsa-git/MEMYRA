@@ -1,0 +1,395 @@
+.page {
+  max-width: 1180px;
+  margin: auto;
+  padding: 1.5rem 2.5rem 2rem;
+  overflow: clip;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.wordmark {
+  font:
+    1.7rem var(--font-serif),
+    serif;
+  letter-spacing: 0.17em;
+}
+.browserLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #f4ecdf;
+}
+.browserLink:hover {
+  color: #a7c957;
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 2rem;
+  padding: 5.5rem 0 4.5rem;
+}
+.copy {
+  position: relative;
+  z-index: 1;
+}
+.eyebrow {
+  color: #a7c957;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.copy h1 {
+  margin: 1.5rem 0;
+  font:
+    500 clamp(3.25rem, 6vw, 5.5rem) / 1.02 var(--font-serif),
+    serif;
+  letter-spacing: -0.035em;
+}
+.copy h1 em {
+  color: #c6b5df;
+  font-weight: 400;
+}
+.intro {
+  max-width: 25rem;
+  color: #ded4e4;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+.actions {
+  margin-top: 2rem;
+  max-width: 28rem;
+}
+.installButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  min-height: 58px;
+  padding: 0.9rem 1.5rem;
+  background: #a7c957;
+  color: #18181f;
+  border: 1px solid transparent;
+  border-radius: 1.2rem;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 8px 32px #a7c95716;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  cursor: pointer;
+}
+.installButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px #a7c9572b;
+}
+.installButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
+}
+.installHint {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #ded4e4;
+}
+.status:empty {
+  display: none;
+}
+.status,
+.installed {
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #a7c957;
+}
+.footnote {
+  margin-top: 1.5rem;
+  color: #c3b5ce;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+.visual {
+  position: relative;
+  display: flex;
+  min-height: 480px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  isolation: isolate;
+}
+.orbit,
+.orbitInner {
+  position: absolute;
+  z-index: -1;
+  width: 430px;
+  height: 430px;
+  border: 1px solid #8066a347;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+.orbit {
+  background: radial-gradient(ellipse, #8066a329, transparent 65%);
+  animation: orbitBreath 9s ease-in-out infinite;
+}
+.orbitInner {
+  width: 340px;
+  height: 340px;
+  border-color: #8066a325;
+}
+.appTile {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  animation: tileFloat 7s ease-in-out infinite;
+}
+.appTile img {
+  width: 144px;
+  height: 144px;
+  border-radius: 32px;
+  box-shadow:
+    0 25px 60px #18181f80,
+    0 0 0 1px #8066a355;
+}
+.appTile > span {
+  font-size: 0.9375rem;
+  letter-spacing: 0.08em;
+}
+.memoryLine {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  margin: 2rem 0 1.5rem;
+}
+.memoryLine span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8066a3;
+  position: relative;
+}
+.memoryLine span:nth-child(2) {
+  background: #a7c957;
+  box-shadow: 0 0 0 5px #a7c95719;
+}
+.memoryLine span:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 1px;
+  top: 2px;
+  left: 10px;
+  background: #8066a34d;
+}
+.visualCaption {
+  font:
+    1.8rem/1.15 var(--font-serif),
+    serif;
+  text-align: center;
+}
+.visualCaption i {
+  color: #c6b5df;
+}
+.orbitLabel {
+  margin-top: 2rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.17em;
+  color: #c3b5ce;
+}
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #8066a34d;
+  padding: 2rem 0;
+  gap: 2.5rem;
+}
+.benefits span {
+  font-size: 0.6875rem;
+  letter-spacing: 0.13em;
+  color: #c6b5df;
+}
+.benefits h2 {
+  font:
+    1.7rem/1.2 var(--font-serif),
+    serif;
+  margin-top: 0.8rem;
+}
+.benefits p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #ded4e4;
+  margin-top: 0.6rem;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  border-top: 1px solid #8066a329;
+  padding-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: #c3b5ce;
+}
+.footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+}
+.instructions {
+  margin-top: 1.5rem;
+  padding: 1.4rem;
+  border: 1px solid #8066a388;
+  border-radius: 1.2rem;
+  background: #35203f;
+}
+.instructions h2 {
+  font:
+    1.9rem/1.2 var(--font-serif),
+    serif;
+  margin-bottom: 1rem;
+}
+.platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+.platforms button {
+  min-height: 44px;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid #8066a3;
+  border-radius: 0.65rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.platforms button[aria-pressed='true'] {
+  background: #f4ecdf;
+  color: #2b1833;
+  border-color: #f4ecdf;
+}
+.instructions ol {
+  padding-left: 1.3rem;
+  list-style: decimal;
+}
+.instructions li {
+  padding: 0 0 0.85rem 0.4rem;
+  font-size: 1rem;
+}
+.instructions > p {
+  font-size: 0.875rem;
+  color: #ded4e4;
+}
+.closeHelp {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 0.75rem;
+  color: #a7c957;
+  text-decoration: underline;
+  cursor: pointer;
+}
+@keyframes tileFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes orbitBreath {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    padding: 1.2rem 1.4rem calc(1.5rem + env(safe-area-inset-bottom));
+  }
+  .header {
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-size: 1.4rem;
+  }
+  .browserLink {
+    font-size: 0.8125rem;
+    gap: 0.3rem;
+  }
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 3rem 0 2rem;
+  }
+  .copy {
+    width: 100%;
+    max-width: 32rem;
+  }
+  .copy h1 {
+    font-size: clamp(3.25rem, 13vw, 4.75rem);
+    margin: 1.2rem 0;
+  }
+  .intro {
+    max-width: 30rem;
+  }
+  .actions {
+    max-width: none;
+    margin-top: 1.6rem;
+  }
+  .visual {
+    width: 100%;
+    min-height: 380px;
+    margin-top: 0.75rem;
+  }
+  .orbit {
+    width: 330px;
+    height: 330px;
+  }
+  .orbitInner {
+    width: 270px;
+    height: 270px;
+  }
+  .appTile img {
+    width: 112px;
+    height: 112px;
+    border-radius: 25px;
+  }
+  .visualCaption {
+    font-size: 1.6rem;
+  }
+  .orbitLabel {
+    margin-top: 1.4rem;
+  }
+  .benefits {
+    grid-template-columns: 1fr;
+    gap: 1.7rem;
+  }
+  .benefits h2 {
+    font-size: 1.6rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit,
+  .appTile {
+    animation: none;
+  }
+  .installButton {
+    transition: none;
+  }
+}

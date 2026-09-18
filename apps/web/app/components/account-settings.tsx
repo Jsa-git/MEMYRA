@@ -43,6 +43,18 @@ export function AccountSettings({ consents }: { consents: readonly ConsentView[]
   return (
     <div className="grid gap-8">
       <Surface className="p-6">
+        <h2 className="font-serif text-2xl">Pelmorya no seu celular</h2>
+        <p className="mt-3 text-base text-ivory/80">
+          Adicione o app à tela inicial e retome sua jornada com um toque.
+        </p>
+        <Link
+          href="/instalar"
+          className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent underline"
+        >
+          Como instalar o app
+        </Link>
+      </Surface>
+      <Surface className="p-6">
         <h2 className="font-serif text-2xl">Privacidade e consentimentos</h2>
         <ul className="mt-4 divide-y divide-ivory/10">
           {consents.map((record) => (

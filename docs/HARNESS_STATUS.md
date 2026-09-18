@@ -2,7 +2,9 @@
 
 ## Estado atual do upgrade
 
-**PARTIAL / NO-GO para publicação.** A matriz abaixo registra a fundação histórica, não a prontidão atual do aplicativo. Captura, storage, rotina e comparação já existem no código; a matriz de implementação vigente, testes e bloqueadores está em [Pelmorya Implementation Status](ux/PELMORYA_IMPLEMENTATION_STATUS.md). Em particular, design system, consentimento, checkout e qualidade de release não devem ser considerados totalmente prontos enquanto houver pendências nessa matriz.
+Atualização PWA — 18/09/2026: **READY** para os contratos de manifest, ícones, página pública `/instalar`, ajuda por plataforma e fallback de rede sem cache privado; **PARTIAL** para instalação real, que ainda exige QA em Android/iPhone físicos. 12 testes E2E públicos aprovados no Edge (desktop e viewport mobile), além da revisão independente sem achados novos P1/P2. Este recorte não encerra as pendências gerais abaixo. Ver `runbooks/PWA.md`.
+
+**PARTIAL / sem aprovação irrestrita de release.** Houve publicação excepcional autorizada em 17/09/2026, documentada no status vigente. A matriz abaixo registra a fundação histórica, não a prontidão atual do aplicativo. Captura, storage, rotina e comparação já existem no código; a matriz de implementação vigente, testes e bloqueadores está em [Pelmorya Implementation Status](ux/PELMORYA_IMPLEMENTATION_STATUS.md). Em particular, design system, consentimento, checkout e qualidade de release não devem ser considerados totalmente prontos enquanto houver pendências nessa matriz.
 
 Legenda: **READY** verificável agora; **PARTIAL** fundação pronta, depende da V1/fornecedor; **TODO** não iniciado intencionalmente.
 

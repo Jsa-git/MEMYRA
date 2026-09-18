@@ -16,6 +16,14 @@ export function AuthShell({ children }: { children: ReactNode }) {
         </span>
       </header>
       <div className="mx-auto flex w-full max-w-md flex-1 items-center py-10">{children}</div>
+      <footer className="mx-auto w-full max-w-md text-center">
+        <Link
+          href="/instalar"
+          className="inline-flex min-h-11 items-center text-sm text-accent underline underline-offset-4"
+        >
+          Levar Pelmorya para meu celular
+        </Link>
+      </footer>
     </main>
   );
 }

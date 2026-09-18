@@ -1,6 +1,10 @@
 # Pelmorya
 
-Harness e plataforma de acompanhamento cosmético Pelmorya (anteriormente MEMYRA). A pele tem memória; o software acompanha uma mesma região ao longo do tempo. Há identidade por e-mail/senha, jornadas, captura privada, rotina, check-ins e comparação visual. IA, recuperação por e-mail e lifecycle durável de exclusão continuam pendentes. Consulte `docs/ux/PELMORYA_IMPLEMENTATION_STATUS.md`: o upgrade é local e ainda não está liberado para produção.
+Harness e plataforma de acompanhamento cosmético Pelmorya (anteriormente MEMYRA). A pele tem memória; o software acompanha uma mesma região ao longo do tempo. Há identidade por e-mail/senha, jornadas, captura privada, rotina, check-ins e comparação visual. IA, recuperação por e-mail e lifecycle durável de exclusão continuam pendentes. Consulte `docs/ux/PELMORYA_IMPLEMENTATION_STATUS.md` para evidências de publicação e riscos ainda abertos; publicação não significa encerramento da auditoria.
+
+## App na tela inicial
+
+A página pública `/instalar` oferece instalação PWA nos navegadores compatíveis e instruções para iPhone/Android. Não é APK nem app de loja; exige confirmação do usuário e internet para acessar a jornada. O worker não mantém cache de fotografias ou dados pessoais. Operação e QA físico pendente em `docs/runbooks/PWA.md`.
 
 ## Pré-requisitos e comandos
 

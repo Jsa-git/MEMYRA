@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /** Read-only public smoke suite: never submits credentials or mutates data. */
 export default defineConfig({
   testDir: './tests/e2e',
-  testMatch: 'public-experience.spec.ts',
+  testMatch: ['public-experience.spec.ts', 'pwa-install.spec.ts'],
   use: {
     baseURL: 'http://127.0.0.1:3100',
     trace: 'retain-on-failure',
